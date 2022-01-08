@@ -1,8 +1,0 @@
-.message-item {
-	@apply flex items-center px-4 py-3;
-}
-
-.message-item.active {
-	background-color: var(--color-dark-highlight);
-	@apply rounded-md; 
-}

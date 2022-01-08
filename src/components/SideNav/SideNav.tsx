@@ -1,6 +1,6 @@
 import './SideNav.css';
 import Channels from 'components/Channels/Channels';
-import DirectMessages from 'components/DirectMessages/DirectMessages';
+import Contacts from 'components/Contacts/Contacts';
 import Avatar from "components/Avatar/Avatar";
 
 const actionItems = [
@@ -33,13 +33,13 @@ const SideNav = (): JSX.Element => {
 				</div>
 			</div>
 			<div className="mb-4">
-				<ActionItems/>
+				<ActionItems />
 			</div>
 			<div className="mb-4">
-				<Channels/>	
+				<Channels />	
 			</div>
 			<div>
-				<DirectMessages/>	
+				<Contacts />	
 			</div>
 		</div>
 	)

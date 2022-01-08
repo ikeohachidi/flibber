@@ -17,7 +17,7 @@ const Channels = (): JSX.Element => {
 	const activeItem = 'Design';
 
 	const channelsList = channels.map((channel, index) => (
-		<li className={`channel-item ${ activeItem === channel.text && 'active' }`} key={ index }>
+		<li className={`list-item ${ activeItem === channel.text && 'active' }`} key={ index }>
 			<span className="mr-3">{ channel.icon }</span>
 			<span>{ channel.text }</span>
 			<span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">{ channel.unread }</span>
@@ -32,7 +32,7 @@ const Channels = (): JSX.Element => {
 			</p>
 			<ul>
 				{ channelsList }
-				<li className="channel-item text-gray-500 text-xs">
+				<li className="list-item text-gray-500 text-xs">
 					<i className="ri-add-line"></i>
 					<span className="ml-2 uppercase">create channel</span>
 				</li>
