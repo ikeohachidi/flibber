@@ -1,26 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 
+import SideNav from './components/SideNav/SideNav';
+import Chat from 'components/Chat/Chat';
+import ChatDetails from 'components/ChatDetails/ChatDetails';
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<div className="App grid grid-cols-8">
+			<div className="col-span-2">
+				<SideNav/>
+			</div>
+			<div className="col-span-4">
+				<Chat/>
+			</div>
+			<div className="col-span-2">
+				<ChatDetails/>
+			</div>
+		</div>
+	);
 }
 
 export default App;

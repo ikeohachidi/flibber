@@ -1,0 +1,4 @@
+.chat-container {
+	background-color: var(--color-dark-1);
+	@apply h-full text-white;
+}
