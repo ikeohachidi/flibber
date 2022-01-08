@@ -1,11 +1,17 @@
 .chat-container {
 	background-color: var(--color-dark-1);
-	@apply h-full text-white relative flex flex-col;
+	@apply h-full text-white relative flex flex-col px-6 shadow-md pt-16;
 }
 
 .message-input {
 	background-color: var(--color-dark-1);
-	@apply absolute bottom-0 w-full p-6;
+	@apply absolute bottom-0 left-0 right-0 p-6 shadow-md;
+}
+
+.chat-banner {
+	background-color: var(--color-dark-2);
+	@apply absolute left-0 right-0 top-0 h-14;
+	@apply flex items-center px-6;
 }
 
 .chat {

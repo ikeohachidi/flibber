@@ -1,5 +1,4 @@
 import Avatar from 'components/Avatar/Avatar';
-import React from 'react';
 import { ChatType, Message } from 'types/Message';
 import User from 'types/User';
 
@@ -71,6 +70,10 @@ const Chat = (): JSX.Element => {
 
 	return (
 		<section className="chat-container">
+			<div className="chat-banner">
+				<span className="mr-4">🍦</span>
+				<p>Them chat people</p>
+			</div>
 			{
 				messages.map((message, index) => (
 					<div 

@@ -1,0 +1,51 @@
+.message-container {
+	background-color: var(--color-dark-1);
+	@apply h-full;
+}
+
+.search-wrapper {
+	background-color: var(--color-dark-1);
+	@apply p-4;
+}
+
+.message-search {
+	background-color: var(--color-dark-highlight);
+	@apply flex items-center p-3 rounded-md;
+}
+
+.message-search i {
+	@apply text-white;
+}
+
+.message-search input {
+	@apply bg-transparent ml-3 w-full focus:outline-none text-white;
+}
+
+.message-item {
+	@apply flex text-white;
+	@apply p-4;
+}
+
+.message-item-metadata {
+	@apply relative w-full;
+}
+
+.message-item-contact {
+	@apply text-lg mb-1;
+}
+
+.message-item-unread-count {
+	@apply text-xs py-1 px-2 bg-gray-800 text-white rounded-full ml-auto;
+}
+
+.message-item-text.read {
+	@apply text-gray-500;
+}
+
+.message-item-chat {
+	@apply flex w-full;
+}
+
+.message-item-time {
+	@apply absolute right-0 top-0 text-gray-600;
+}
