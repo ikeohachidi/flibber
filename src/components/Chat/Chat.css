@@ -1,6 +1,7 @@
 .chat-container {
 	background-color: var(--color-dark-1);
-	@apply h-full text-white relative flex flex-col px-6 shadow-md pt-16;
+	@apply h-full text-white relative flex flex-col px-6 pt-16 overflow-x-hidden;
+	@apply border-l border-l-zinc-800;
 }
 
 .message-input {
@@ -18,8 +19,22 @@
 	@apply flex w-1/2 mb-3;
 }
 
+.chat-banner {
+	@apply flex justify-between items-center;
+}
+
 .chat.sending {
 	@apply flex-row-reverse ml-auto; 
+}
+
+.chat-details {
+	@apply absolute top-0 bottom-0 right-0 z-10 shadow-lg;
+	transition: .5s;
+	width: 500px;
+}
+
+.chat-details.hide {
+	transform: translateX(100%);
 }
 
 .text-bubble {

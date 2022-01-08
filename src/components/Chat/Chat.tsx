@@ -1,9 +1,11 @@
-import Avatar from 'components/Avatar/Avatar';
-import { ChatType, Message } from 'types/Message';
-import User from 'types/User';
-
 import './Chat.css';
 import MessageInput from './MessageInput/MessageInput';
+import Avatar from 'components/Avatar/Avatar';
+import ChatDetails from './ChatDetails/ChatDetails';
+
+import { ChatType, Message } from 'types/Message';
+import User from 'types/User';
+import { useRef } from 'react';
 
 
 /**
@@ -20,7 +22,6 @@ const isMessageInAStreak = (messageIndex: number, messages: Message[]) => {
 
 	return presentSender.id === prevSender.id;
 } 
-
 
 
 const Chat = (): JSX.Element => {
@@ -68,11 +69,20 @@ const Chat = (): JSX.Element => {
 		},
 	];
 
+	const chatDetailsEl = useRef<HTMLDivElement>(null);
+
+	const onCloseClick = () => {
+		chatDetailsEl.current?.classList.toggle('hide');
+	}
+
 	return (
 		<section className="chat-container">
+			<div className="chat-details" ref={ chatDetailsEl }>
+				<ChatDetails onCloseClick={ onCloseClick }/>
+			</div>
 			<div className="chat-banner">
-				<span className="mr-4">🍦</span>
-				<p>Them chat people</p>
+				<span> 🍦 Chat App</span>
+				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
 			{
 				messages.map((message, index) => (
