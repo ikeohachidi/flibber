@@ -1,0 +1,16 @@
+.message-input-container {
+	background-color: var(--color-dark-highlight);
+	@apply flex items-center py-3 px-5 rounded-md;
+}
+
+.message-input-container i {
+	@apply cursor-pointer;
+}
+
+.message-input-container input {
+	@apply bg-transparent flex-grow mx-3;
+}
+
+.message-input-container input:focus {
+	@apply outline-none;
+}
