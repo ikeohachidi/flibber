@@ -1,4 +1,31 @@
 .chat-container {
 	background-color: var(--color-dark-1);
-	@apply h-full text-white;
+	@apply h-full text-white relative flex flex-col;
+}
+
+.message-input {
+	background-color: var(--color-dark-1);
+	@apply absolute bottom-0 w-full p-6;
+}
+
+.chat {
+	@apply flex w-1/2 mb-3;
+}
+
+.chat.sending {
+	@apply flex-row-reverse ml-auto; 
+}
+
+.text-bubble {
+	@apply py-2 px-4 rounded-full;
+}
+
+.receiving .text-bubble {
+	background-color: var(--color-dark-highlight);
+	@apply rounded-tl-none;
+}
+
+.sending .text-bubble {
+	background-color: var(--color-primary);
+	@apply rounded-tr-none;
 }

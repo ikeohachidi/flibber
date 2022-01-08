@@ -1,10 +1,9 @@
 import './Contacts.css';
 
 import Avatar from 'components/Avatar/Avatar';
-import Message from 'types/Messages';
 
 const Contacts = (): JSX.Element => {
-	const messages: Message[] = [
+	const contacts = [
 		{
 			messages: [],
 			unread: 3,
@@ -27,14 +26,14 @@ const Contacts = (): JSX.Element => {
 
 	const activeUserId = 0; 
 
-	const messageList = messages.map((message, index) => (
-		<li className={`list-item ${ activeUserId === message.user.id && 'active'}`} key={ index }>
+	const messageList = contacts.map((contact, index) => (
+		<li className={`list-item ${ activeUserId === contact.user.id && 'active'}`} key={ index }>
 			<Avatar />
-			<span className="ml-3">{ message.user.name }</span>
+			<span className="ml-3">{ contact.user.name }</span>
 			<span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">
 				{
-					message.unread && message.unread > 0
-					? <span>{ message.unread }</span>
+					contact.unread && contact.unread > 0
+					? <span>{ contact.unread }</span>
 					: ''
 				}
 			</span>
