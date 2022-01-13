@@ -26,7 +26,7 @@ const Contacts = (): JSX.Element => {
 
 	const activeUserId = 0; 
 
-	const messageList = contacts.map((contact, index) => (
+	const contactsList = contacts.map((contact, index) => (
 		<li className={`list-item ${ activeUserId === contact.user.id && 'active'}`} key={ index }>
 			<Avatar />
 			<span className="ml-3">{ contact.user.name }</span>
@@ -47,7 +47,11 @@ const Contacts = (): JSX.Element => {
 				<span className="inline-block ml-3 text-xs uppercase">contacts</span>
 			</p>
 			<ul>
-				{ messageList }
+				{ contactsList }
+				<li className="list-item text-gray-500 text-xs">
+					<i className="ri-add-line"></i>
+					<span className="ml-2 uppercase">add contact</span>
+				</li>
 			</ul>
 		</div>
 	)
