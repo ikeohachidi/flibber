@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
-import { activeUser, signUp } from 'services/authentication';
+import { authentictedUser, signUp } from 'services/authentication';
 import RoutePath from 'routes';
 
 const Signup = () => {
@@ -28,7 +28,7 @@ const Signup = () => {
 	}
 
 	useEffect(() => {
-		if (activeUser()) {
+		if (authentictedUser()) {
 			navigation(RoutePath.APP);
 		}
 	})

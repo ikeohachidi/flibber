@@ -5,14 +5,15 @@ import SideNav from 'components/SideNav/SideNav';
 import Chat from 'components/Chat/Chat';
 import Messages from 'components/Messages/Messages';
 
-import { activeUser } from 'services/authentication';
+import { authentictedUser } from 'services/authentication';
 import RoutePath from 'routes';
 
 const Application = () => {
 	const navigation = useNavigate();
+	const loggedInUser = authentictedUser();
 
 	useEffect(() => {
-		if (activeUser() === null) {
+		if (loggedInUser === null) {
 			navigation(RoutePath.LOGIN);
 		}
 	})

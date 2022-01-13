@@ -77,7 +77,7 @@ const Chat = (): JSX.Element => {
 
 	return (
 		<section className="chat-container">
-			<div className="chat-details" ref={ chatDetailsEl }>
+			<div className="chat-details hide" ref={ chatDetailsEl }>
 				<ChatDetails onCloseClick={ onCloseClick }/>
 			</div>
 			<div className="chat-banner">

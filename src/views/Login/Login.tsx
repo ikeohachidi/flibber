@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
-import { activeUser, signIn } from 'services/authentication';
+import { authentictedUser, signIn } from 'services/authentication';
 import RoutePath from 'routes';
 
 const Login = () => {
@@ -27,7 +27,7 @@ const Login = () => {
 	}
 
 	useEffect(() => {
-		if (activeUser()) {
+		if (authentictedUser()) {
 			navigation(RoutePath.APP);
 		}
 	})
