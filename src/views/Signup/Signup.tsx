@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
 import { signUp } from 'services/authentication';
@@ -28,7 +28,7 @@ const Signup = () => {
 	}
 
 	return (
-		<div className="auth-wrapper h-screen flex items-center justify-center">
+		<div className="auth-wrapper h-screen flex flex-col items-center justify-center">
 			<div className="form-wrapper grid grid-cols-2 gap-4 w-4/12 p-8 rounded-md">
 				<div className="input-block">
 					<label>Name</label>
@@ -47,6 +47,7 @@ const Signup = () => {
 					<button onClick={ createUserAccount }>Signup</button>
 				</div>
 			</div>
+			<p className="text-white mt-4">Already have an account? <Link className="text-indigo-700 underline" to={ RoutePath.LOGIN }>Login</Link></p>
 		</div>
 	)
 }

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
 import { signIn } from 'services/authentication';
@@ -27,7 +27,7 @@ const Login = () => {
 	}
 
 	return (
-		<div className="auth-wrapper h-screen flex items-center justify-center">
+		<div className="auth-wrapper h-screen flex flex-col items-center justify-center">
 			<div className="form-wrapper w-4/12 p-8 rounded-md">
 				<div className="input-block">
 					<label>Email</label>
@@ -42,6 +42,7 @@ const Login = () => {
 					<button onClick={ loginUserAccount }>Login</button>
 				</div>
 			</div>
+			<p className="text-white mt-4">Don't have an account yet? <Link className="text-indigo-700 underline" to={ RoutePath.SIGNUP }>Signup</Link></p>
 		</div>
 	)
 }
