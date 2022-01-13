@@ -12,3 +12,22 @@
 body {
 	font-family: 'Public Sans', sans-serif;
 }
+
+input:not(.custom) {
+	@apply bg-gray-50 p-3 rounded-md border border-gray-200;
+}
+
+.input-block {
+	@apply flex flex-col mb-5;
+}
+
+.input-block label {
+	@apply mb-2 text-white;
+}
+
+.input-block input {
+	background: var(--color-dark-highlight);
+	border-color: var(--color-dark-1);
+	@apply focus:ring-2 focus:ring-indigo-700 focus:outline-none;
+}
+
