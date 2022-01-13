@@ -1,22 +1,18 @@
+import { Routes, Route } from "react-router-dom";
+
 import './App.css';
 
-import SideNav from './components/SideNav/SideNav';
-import Chat from 'components/Chat/Chat';
-import ChatDetails from 'components/ChatDetails/ChatDetails';
+import Application from 'views/Application/Application';
+import Signup from "views/Signup/Signup";
+import Login from "views/Login/Login";
 
 function App() {
 	return (
-		<div className="App grid grid-cols-8">
-			<div className="col-span-2">
-				<SideNav/>
-			</div>
-			<div className="col-span-4">
-				<Chat/>
-			</div>
-			<div className="col-span-2">
-				<ChatDetails/>
-			</div>
-		</div>
+		<Routes>
+			<Route path="/" element={ <Application/> } />
+			<Route path="/signup" element={ <Signup/> } />
+			<Route path="/login" element={ <Login/> } />
+		</Routes>
 	);
 }
 
