@@ -1,9 +1,12 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Signup.css';
 
 import { signUp } from 'services/authentication';
+import RoutePath from 'routes';
 
 const Signup = () => {
+	const navigation = useNavigate();
 	const name = useRef<HTMLInputElement>(null);
 	const email = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
@@ -18,7 +21,9 @@ const Signup = () => {
 			if (error) {
 				// TODO: handle error
 				console.log(error)
+				return;
 			}
+			navigation(RoutePath.APP)
 		})
 	}
 

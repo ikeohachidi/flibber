@@ -1,9 +1,13 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 import { signIn } from 'services/authentication';
+import RoutePath from 'routes';
 
 const Login = () => {
+	const navigation = useNavigate();
+
 	const email = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
 
@@ -15,8 +19,10 @@ const Login = () => {
 		.then(({ error }) => {
 			if (error) {
 				// TODO: handle error
-				console.log(error)
+				console.log(error);
+				return;
 			}
+			navigation(RoutePath.APP)
 		})
 	}
 
