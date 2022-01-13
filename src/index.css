@@ -28,6 +28,7 @@ input:not(.custom) {
 .input-block input {
 	background: var(--color-dark-highlight);
 	border-color: var(--color-dark-1);
+	@apply text-white;
 	@apply focus:ring-2 focus:ring-indigo-700 focus:outline-none;
 }
 

@@ -1,20 +1,39 @@
+import { useRef } from 'react';
 import './Login.css';
 
+import { signIn } from 'services/authentication';
+
 const Login = () => {
+	const email = useRef<HTMLInputElement>(null);
+	const password = useRef<HTMLInputElement>(null);
+
+	const loginUserAccount = () => {
+		signIn({ 
+			email: email.current?.value as string,
+			password: password.current?.value as string
+		})
+		.then(({ error }) => {
+			if (error) {
+				// TODO: handle error
+				console.log(error)
+			}
+		})
+	}
+
 	return (
 		<div className="auth-wrapper h-screen flex items-center justify-center">
 			<div className="form-wrapper w-4/12 p-8 rounded-md">
 				<div className="input-block">
 					<label>Email</label>
-					<input type="email" placeholder="John"/>
+					<input type="email" placeholder="John" ref={ email }/>
 				</div>
 				<div className="input-block col-span-2">
 					<label>Password</label>
-					<input type="password" placeholder=""/>
+					<input type="password" ref={ password }/>
 				</div>
 
 				<div className="col-span-2 flex justify-end">
-					<button>Login</button>
+					<button onClick={ loginUserAccount }>Login</button>
 				</div>
 			</div>
 		</div>

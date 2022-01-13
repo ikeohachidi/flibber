@@ -1,18 +1,23 @@
 import supabase from "./supabase"
-import User from 'types/User';
+import User, { Credentials } from 'types/User';
 
 import { createUser } from './user';
 
-const signUp = async (credentials: User) => {
-	const {user, error} = await supabase.auth.signUp(credentials);
+type UserCredentials = Partial<User & Credentials>;
+
+const signUp = async (credentials: UserCredentials) => {
+	const { user, error } = await supabase.auth.signUp(credentials);
 	if (!error) {
-		await createUser(credentials);
+		const { error } = await createUser({
+			email: credentials.email,
+			name: credentials.name
+		})
 	}
 	
 	return { user, error };
 }
 
-const signIn = async (credentials: User) => {
+const signIn = async (credentials: Credentials) => {
 	const { user, error } = await supabase.auth.signIn(credentials);
 
 	return { user, error };
