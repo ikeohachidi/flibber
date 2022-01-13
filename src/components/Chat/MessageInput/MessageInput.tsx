@@ -11,7 +11,7 @@ const MessageInput = (): JSX.Element => {
 	return (
 		<div className="message-input-container">
 			<i className="ri-mic-2-line"></i>
-			<input type="text" placeholder={`Message ${ activeUser.name }`}/>
+			<input className="custom" type="text" placeholder={`Message ${ activeUser.name }`}/>
 			<i className="ri-add-line mx-4"></i>
 			<i className="ri-send-plane-line"></i>
 		</div>

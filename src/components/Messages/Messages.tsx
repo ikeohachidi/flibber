@@ -82,7 +82,7 @@ const Messages = (): JSX.Element => {
 			<div className="search-wrapper">
 				<div className="message-search">
 					<i className="ri-search-2-line"></i>
-					<input type="text" placeholder="Search messages.." />
+					<input className="custom" type="text" placeholder="Search messages.." />
 				</div>
 			</div>
 			<ContactsMessage />
