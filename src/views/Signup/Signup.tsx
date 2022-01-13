@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
-import { signUp } from 'services/authentication';
+import { activeUser, signUp } from 'services/authentication';
 import RoutePath from 'routes';
 
 const Signup = () => {
@@ -26,6 +26,12 @@ const Signup = () => {
 			navigation(RoutePath.APP)
 		})
 	}
+
+	useEffect(() => {
+		if (activeUser()) {
+			navigation(RoutePath.APP);
+		}
+	})
 
 	return (
 		<div className="auth-wrapper h-screen flex flex-col items-center justify-center">
