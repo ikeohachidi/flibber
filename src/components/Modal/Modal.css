@@ -1,0 +1,9 @@
+.modal-container {
+	@apply fixed right-0 left-0 top-0 bottom-0;
+	background-color: var(--color-dark-1);
+	transition: visibility 0s opacity .5s;
+}
+
+.modal-container.hide {
+	@apply invisible opacity-0;
+}
