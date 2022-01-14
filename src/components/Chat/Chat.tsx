@@ -4,7 +4,7 @@ import Avatar from 'components/Avatar/Avatar';
 import ChatDetails from './ChatDetails/ChatDetails';
 
 import { ChatType, Message } from 'types/Message';
-import User from 'types/User';
+import User, { UserSession } from 'types/User';
 import { useRef } from 'react';
 
 
@@ -23,8 +23,11 @@ const isMessageInAStreak = (messageIndex: number, messages: Message[]) => {
 	return presentSender.id === prevSender.id;
 } 
 
+type Props = {
+	user: UserSession;
+}
 
-const Chat = (): JSX.Element => {
+const Chat = (props: Props): JSX.Element => {
 	const credentials: User = {
 		id: 3,
 		name: 'Ikeoha Chidi',

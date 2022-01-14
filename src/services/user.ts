@@ -10,6 +10,17 @@ const createUser = async (user: Partial<User>) => {
 	return { data, error }
 }
 
+const getUser = async(user: Partial<User>, column: keyof User) => {
+	const { data, error } = await supabase
+		.from('user')
+		.select('*')
+		.eq('email', user[column])
+		.single()
+
+	return { data, error }
+}
+
 export {
-	createUser
+	createUser,
+	getUser
 }

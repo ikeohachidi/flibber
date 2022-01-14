@@ -1,5 +1,5 @@
 import AvatarGroup from 'components/Avatar/AvatarGroup';
-import User from 'types/User';
+import User, { UserSession } from 'types/User';
 import './Messages.css';
 
 const ContactsMessage = (): JSX.Element => {
@@ -76,7 +76,11 @@ const ContactsMessage = (): JSX.Element => {
 	)
 }
 
-const Messages = (): JSX.Element => {
+type Props = {
+	user: UserSession;
+}
+
+const Messages = (props: Props): JSX.Element => {
 	return (
 		<div className="message-container">
 			<div className="search-wrapper">

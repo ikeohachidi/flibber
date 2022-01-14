@@ -1,3 +1,5 @@
+import { User as UserSession } from '@supabase/supabase-js'
+
 type User = {
 	id: number;
 	email: string;
@@ -6,9 +8,14 @@ type User = {
 	onlineState?: 'online' | 'away' | 'offline';
 }
 
-export type Credentials = {
+type Credentials = {
 	email: string;
 	password: string;
+}
+
+export { 
+	UserSession,
+	Credentials
 }
 
 export default User;

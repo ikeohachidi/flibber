@@ -1,7 +1,8 @@
 import supabase from "./supabase"
-import User, { Credentials } from 'types/User';
+import User, { Credentials, UserSession } from 'types/User';
 
 import { createUser } from './user';
+import { useEffect, useState } from "react";
 
 type UserCredentials = Partial<User & Credentials>;
 
@@ -28,8 +29,33 @@ const signOut = async () => {
 	return error;
 }
 
+const authentictedUser = () => {
+	return supabase.auth.user();
+}
+
+const useAuthState = () => {
+	const [authState, setAuthState] = useState<null | UserSession>(null);
+
+	useEffect(() => {
+		supabase.auth.onAuthStateChange((event, session) => {
+			switch (event) {
+				case 'SIGNED_OUT':
+					setAuthState(null);
+					break;
+				case 'SIGNED_IN':
+					if (session && session.user) setAuthState(session?.user);
+					break;
+			}
+		})
+	})
+
+	return authState;
+}
+
 export {
 	signUp,
 	signIn,
-	signOut
+	signOut,
+	authentictedUser,
+	useAuthState
 }
