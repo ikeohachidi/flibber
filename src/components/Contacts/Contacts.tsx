@@ -1,6 +1,10 @@
+import { useState } from 'react';
+
 import './Contacts.css';
 
 import Avatar from 'components/Avatar/Avatar';
+import Modal from 'components/Modal/Modal';
+import AddContact from './AddContact/AddContact';
 
 const Contacts = (): JSX.Element => {
 	const contacts = [
@@ -26,6 +30,8 @@ const Contacts = (): JSX.Element => {
 
 	const activeUserId = 0; 
 
+	const [ showModal, setShowModal ] = useState(false);
+
 	const contactsList = contacts.map((contact, index) => (
 		<li className={`list-item ${ activeUserId === contact.user.id && 'active'}`} key={ index }>
 			<Avatar />
@@ -42,6 +48,9 @@ const Contacts = (): JSX.Element => {
 
 	return (
 		<div>
+			<Modal show={ showModal } onClose={ () => setShowModal(false) }>
+				<AddContact/>
+			</Modal>
 			<p className="flex items-center text-gray-500 px-4 mb-3">
 				<i className="ri-arrow-down-s-line"></i>
 				<span className="inline-block ml-3 text-xs uppercase">contacts</span>
@@ -50,7 +59,7 @@ const Contacts = (): JSX.Element => {
 				{ contactsList }
 				<li className="list-item text-gray-500 text-xs">
 					<i className="ri-add-line"></i>
-					<span className="ml-2 uppercase">add contact</span>
+					<span className="ml-2 uppercase" onClick={ () => setShowModal(true) }>add contact</span>
 				</li>
 			</ul>
 		</div>

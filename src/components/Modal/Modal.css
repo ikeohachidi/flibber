@@ -1,7 +1,8 @@
 .modal-container {
 	@apply fixed right-0 left-0 top-0 bottom-0;
-	background-color: var(--color-dark-1);
-	transition: visibility 0s opacity .5s;
+	@apply flex justify-center items-center;
+	@apply bg-zinc-900/[.9];
+	transition: visibility 0s, opacity .2s;
 }
 
 .modal-container.hide {
