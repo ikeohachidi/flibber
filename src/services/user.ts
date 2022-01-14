@@ -4,7 +4,7 @@ import User from "types/User";
 
 const createUser = async (user: Partial<User>) => {
 	const { data, error } = await supabase
-		.from('user')
+		.from<User>('user')
 		.insert([ user ])
 
 	return { data, error }
@@ -12,7 +12,7 @@ const createUser = async (user: Partial<User>) => {
 
 const getUser = async(user: Partial<User>, column: keyof User) => {
 	const { data, error } = await supabase
-		.from('user')
+		.from<User>('user')
 		.select('*')
 		.eq('email', user[column])
 		.single()
