@@ -9,6 +9,7 @@ const sendContactRequest = async (requester: number, email: string) => {
 		.single()
 
 	if (error) return error;
+	if (data?.id === requester) return;
 
 	return supabase
 		.from('contact_request')
@@ -17,6 +18,16 @@ const sendContactRequest = async (requester: number, email: string) => {
 		])
 }
 
+const getPendingContactRequest = (userId: number) => {
+	return supabase
+		.from('contact_request')
+		.select(`
+			user( * )
+		`)
+		.eq('requestee', userId)
+}
+
 export {
-	sendContactRequest
+	sendContactRequest,
+	getPendingContactRequest
 }
