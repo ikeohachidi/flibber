@@ -1,19 +1,21 @@
 import { useRef } from 'react';
-import { useSelector } from 'react-redux';
 
 import { sendContactRequest } from 'supabase/contact';
 
-import { UserState } from 'store/user';
 import User from 'types/User';
 
-const AddContact = (): JSX.Element => {
+type Props = {
+	user: User;
+}
+
+const AddContact = (props: Props): JSX.Element => {
 	const email = useRef<HTMLInputElement>(null);
-	const selector = useSelector<{ user: UserState }, User>(state => state.user.user as User);
 
 	const addUser = () => {
 		if (email.current) {
 			// TODO: add loader indicator and success/error alert
-			sendContactRequest(selector.id, email.current?.value)
+			// TODO: shouldn't be using the function from the supabase folder directly
+			if (props.user) sendContactRequest(props.user.id, email.current?.value)
 		}
 	}
 
