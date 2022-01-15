@@ -1,42 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router';
 
 import SideNav from 'components/SideNav/SideNav';
 import Chat from 'components/Chat/Chat';
 import Messages from 'components/Messages/Messages';
 
-import { authentictedUser } from 'supabase/authentication';
 import RoutePath from 'routes';
-import User, { UserSession } from 'types/User';
-import { getUser } from 'supabase/user';
+import User from 'types/User';
+import { useActiveUser } from 'hooks/activUser';
 
 const Application = () => {
 	const navigation = useNavigate();
-	const activeUser = authentictedUser() as UserSession;
-	let [ activeUserMetadata, setActiveUserMetadata ] = useState<User>()
 
-	useEffect(() => {
+	const activeUserMetadata = useActiveUser((activeUser) => {
 		if (activeUser === null) {
 			navigation(RoutePath.LOGIN);
 		}
-
-		getUser({ email: activeUser.email }, 'email')
-			.then(({ data, error }) => {
-				if (error) return;
-				setActiveUserMetadata(data!)
-			})
-	})
+	});
 
 	return (
 		<div className="App grid grid-cols-8">
 			<div className="col-span-2">
-				<SideNav session={ activeUser } user={ activeUserMetadata as User }/>
+				<SideNav user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-2">
-				<Messages user={ activeUser }/>
+				<Messages user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-4">
-				<Chat user={ activeUser }/>
+				<Chat user={ activeUserMetadata as User  }/>
 			</div>
 		</div>
 	)

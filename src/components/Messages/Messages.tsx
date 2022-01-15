@@ -77,7 +77,7 @@ const ContactsMessage = (): JSX.Element => {
 }
 
 type Props = {
-	user: UserSession;
+	user: User;
 }
 
 const Messages = (props: Props): JSX.Element => {

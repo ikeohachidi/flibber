@@ -24,7 +24,7 @@ const isMessageInAStreak = (messageIndex: number, messages: Message[]) => {
 } 
 
 type Props = {
-	user: UserSession;
+	user: User;
 }
 
 const Chat = (props: Props): JSX.Element => {

@@ -29,7 +29,6 @@ const ActionItems = (): JSX.Element => {
 } 
 
 type Props = {
-	session: UserSession;
 	user: User;
 }
 
@@ -49,7 +48,7 @@ const SideNav = (props: Props): JSX.Element => {
 				<Avatar dimension={50} />
 				<div className="ml-2">
 					<p className="text-lg font-bold">{ props.user && props.user.name }</p>
-					<p className="text-gray-500 text-xs">{ props.session && props.session.email }</p>
+					<p className="text-gray-500 text-xs">{ props.user && props.user.email }</p>
 					<p className="text-gray-500 text-xs">Active</p>
 				</div>
 				<i className="ri-logout-box-r-line ri-lg ml-auto cursor-pointer" onClick={ signOutUser }></i>
