@@ -7,8 +7,8 @@ const sendContactRequest = async (requester: number, email: string) => {
 		.select('id')
 		.eq('email', email)
 		.single()
-	
-	if (error) return;
+
+	if (error) return error;
 
 	return supabase
 		.from('contact_request')
