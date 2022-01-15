@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 import { signInService } from 'services/authentication';
 
 import User from "types/User";
