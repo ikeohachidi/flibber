@@ -5,7 +5,7 @@ import User, { Credentials } from "types/User";
 import { signIn } from "supabase/authentication";
 import { getUser } from "supabase/user";
 
-export const signInService = createAsyncThunk('todos/saveNewTodo', async (credentials: Credentials) => {
+export const signInService = createAsyncThunk('user/setUser', async (credentials: Credentials) => {
 	let { user, error } = await signIn(credentials)
 
 	if (error) return;
