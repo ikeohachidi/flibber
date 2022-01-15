@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 
 import SideNav from 'components/SideNav/SideNav';
 import Chat from 'components/Chat/Chat';
@@ -8,14 +9,19 @@ import Messages from 'components/Messages/Messages';
 import RoutePath from 'routes';
 import User from 'types/User';
 import { useActiveUser } from 'hooks/activeUser';
+import { setUser } from 'store/user';
 
 const Application = () => {
 	const navigation = useNavigate();
+	const dispatch = useDispatch();
 
-	const activeUserMetadata = useActiveUser((activeUser) => {
+	const activeUserMetadata = useActiveUser((activeUser, userMetadata) => {
 		if (activeUser === null) {
 			navigation(RoutePath.LOGIN);
+			return;
 		}
+
+		dispatch(setUser( userMetadata ))
 	});
 
 	return (
