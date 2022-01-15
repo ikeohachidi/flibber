@@ -1,8 +1,13 @@
 import { useRef } from 'react';
-import { authentictedUser } from 'services/authentication';
+import { authentictedUser } from 'supabase/authentication';
+import { sendContactRequest } from 'supabase/contact';
 
 const AddContact = (): JSX.Element => {
 	const email = useRef<HTMLInputElement>(null);
+
+	const addUser = () => {
+		// TODO: implement
+	}
 
 	return (
 		<div className="form-wrapper w-4/12 p-8 rounded-md">
@@ -12,7 +17,7 @@ const AddContact = (): JSX.Element => {
 			</div>
 
 			<div className="col-span-2 flex justify-end">
-				<button>Add User</button>
+				<button onClick={ addUser }>Add User</button>
 			</div>
 		</div>
 	)

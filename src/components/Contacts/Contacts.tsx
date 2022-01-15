@@ -59,7 +59,7 @@ const Contacts = (): JSX.Element => {
 				{ contactsList }
 				<li className="list-item text-gray-500 text-xs">
 					<i className="ri-add-line"></i>
-					<span className="ml-2 uppercase" onClick={ () => setShowModal(true) }>add contact</span>
+					<span className="ml-2 uppercase cursor-pointer" onClick={ () => setShowModal(true) }>add contact</span>
 				</li>
 			</ul>
 		</div>

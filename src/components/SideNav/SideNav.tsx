@@ -3,7 +3,7 @@ import Channels from 'components/Channels/Channels';
 import Contacts from 'components/Contacts/Contacts';
 import Avatar from "components/Avatar/Avatar";
 
-import { signOut } from 'services/authentication';
+import { signOut } from 'supabase/authentication';
 import User, { UserSession } from 'types/User';
 import { useNavigate } from 'react-router';
 
