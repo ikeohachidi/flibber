@@ -1,61 +1,18 @@
-import supabase from "./supabase"
-import User, { Credentials, UserSession } from 'types/User';
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { createUser } from './user';
-import { useEffect, useState } from "react";
+import User, { Credentials } from "types/User";
 
-type UserCredentials = Partial<User & Credentials>;
+import { signIn } from "supabase/authentication";
+import { getUser } from "supabase/user";
 
-const signUp = async (credentials: UserCredentials) => {
-	const { user, error } = await supabase.auth.signUp(credentials);
-	if (!error) {
-		const { error } = await createUser({
-			email: credentials.email,
-			name: credentials.name
-		})
-	}
-	
-	return { user, error };
-}
+export const signInService = createAsyncThunk('todos/saveNewTodo', async (credentials: Credentials) => {
+	let { user, error } = await signIn(credentials)
 
-const signIn = async (credentials: Credentials) => {
-	const { user, error } = await supabase.auth.signIn(credentials);
+	if (error) return;
 
-	return { user, error };
-}
+	let { data, error: userError } = await getUser({ email: user?.email}, 'email')
 
-const signOut = async () => {
-	const { error } = await supabase.auth.signOut();
-	return error;
-}
+	if (userError) return;
 
-const authentictedUser = () => {
-	return supabase.auth.user();
-}
-
-const useAuthState = () => {
-	const [authState, setAuthState] = useState<null | UserSession>(null);
-
-	useEffect(() => {
-		supabase.auth.onAuthStateChange((event, session) => {
-			switch (event) {
-				case 'SIGNED_OUT':
-					setAuthState(null);
-					break;
-				case 'SIGNED_IN':
-					if (session && session.user) setAuthState(session?.user);
-					break;
-			}
-		})
-	})
-
-	return authState;
-}
-
-export {
-	signUp,
-	signIn,
-	signOut,
-	authentictedUser,
-	useAuthState
-}
+	return data
+})
