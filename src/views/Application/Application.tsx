@@ -7,7 +7,7 @@ import Messages from 'components/Messages/Messages';
 
 import RoutePath from 'routes';
 import User from 'types/User';
-import { useActiveUser } from 'hooks/activUser';
+import { useActiveUser } from 'hooks/activeUser';
 
 const Application = () => {
 	const navigation = useNavigate();
