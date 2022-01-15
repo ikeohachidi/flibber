@@ -5,17 +5,20 @@ import { getUser } from 'supabase/user';
 
 import User, { UserSession } from 'types/User';
 
-export const useActiveUser = (callback?: (activeuser: UserSession, userMetaData: User) => void) => {
+export const useActiveUser = (callback?: (activeuser: UserSession, userMetaData: User | null) => void) => {
 	const [ activeUserMetadata, setActiveUserMetadata ] = useState<User>()
 	
 	useEffect(() => {
 		const activeUser = authentictedUser() as UserSession;
 
+		if (callback) callback(activeUser, null);
+		if (!activeUser) return; 
+
 		getUser({ email: activeUser.email }, 'email')
 			.then(({ data, error }) => {
 				if (error) return;
-				if (callback) callback(activeUser, data!);
 				setActiveUserMetadata(data!)
+				if (callback) callback(activeUser, null);
 			})
 	}, [])
 

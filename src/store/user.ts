@@ -4,22 +4,16 @@ import { signInService } from 'services/authentication';
 
 import User from "types/User";
 
-type Action = { payload: User };
+type Action = { payload: User | null };
 
 type State = {
-	user: Partial<User>;
+	user: Partial<User> | null;
 	status: 'pending' | 'fulfilled'
 }
 
 const initialState: State  = {
 	status: 'fulfilled',
-	user: {
-		email: '',
-		id: 0,
-		name: '',
-		image: '',
-		onlineState: 'offline'
-	}
+	user: null 
 }
 
 const userSlice = createSlice({
@@ -30,7 +24,7 @@ const userSlice = createSlice({
 			state.user = action.payload;
 		},
 		removeUser(state: State) {
-			state.user = {}
+			state.user = null 
 		},
 	},
 	extraReducers: (builder) => {
