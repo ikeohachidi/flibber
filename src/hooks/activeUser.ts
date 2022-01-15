@@ -18,9 +18,9 @@ export const useActiveUser = (callback?: (activeuser: UserSession, userMetaData:
 			.then(({ data, error }) => {
 				if (error) return;
 				setActiveUserMetadata(data!)
-				if (callback) callback(activeUser, null);
+				if (callback) callback(activeUser, data!);
 			})
-	}, [])
+	}, [ ])
 
 	return activeUserMetadata;
 }
