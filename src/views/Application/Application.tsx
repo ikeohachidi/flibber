@@ -5,10 +5,10 @@ import SideNav from 'components/SideNav/SideNav';
 import Chat from 'components/Chat/Chat';
 import Messages from 'components/Messages/Messages';
 
-import { authentictedUser } from 'services/authentication';
+import { authentictedUser } from 'supabase/authentication';
 import RoutePath from 'routes';
 import User, { UserSession } from 'types/User';
-import { getUser } from 'services/user';
+import { getUser } from 'supabase/user';
 
 const Application = () => {
 	const navigation = useNavigate();
@@ -20,9 +20,10 @@ const Application = () => {
 			navigation(RoutePath.LOGIN);
 		}
 
-		getUser({ email: 'ikeohachidi@gmail.com' }, 'email')
-			.then(({ data }) => {
-				setActiveUserMetadata(data)
+		getUser({ email: activeUser.email }, 'email')
+			.then(({ data, error }) => {
+				if (error) return;
+				setActiveUserMetadata(data!)
 			})
 	})
 
