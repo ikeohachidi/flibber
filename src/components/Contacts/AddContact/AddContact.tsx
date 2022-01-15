@@ -1,12 +1,20 @@
 import { useRef } from 'react';
-import { authentictedUser } from 'supabase/authentication';
+import { useSelector } from 'react-redux';
+
 import { sendContactRequest } from 'supabase/contact';
+
+import { UserState } from 'store/user';
+import User from 'types/User';
 
 const AddContact = (): JSX.Element => {
 	const email = useRef<HTMLInputElement>(null);
+	const selector = useSelector<{ user: UserState }, User>(state => state.user.user as User);
 
 	const addUser = () => {
-		// TODO: implement
+		if (email.current) {
+			// TODO: add loader indicator and success/error alert
+			sendContactRequest(selector.id, email.current?.value)
+		}
 	}
 
 	return (

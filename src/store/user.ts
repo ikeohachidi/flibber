@@ -6,12 +6,12 @@ import User from "types/User";
 
 type Action = { payload: User | null };
 
-type State = {
-	user: Partial<User> | null;
+type UserState = {
+	user: User | null;
 	status: 'pending' | 'fulfilled'
 }
 
-const initialState: State  = {
+const initialState: UserState  = {
 	status: 'fulfilled',
 	user: null 
 }
@@ -20,10 +20,10 @@ const userSlice = createSlice({
 	name: 'user',
 	initialState,
 	reducers: {
-		setUser(state: State, action: Action) {
+		setUser(state: UserState, action: Action) {
 			state.user = action.payload;
 		},
-		removeUser(state: State) {
+		removeUser(state: UserState) {
 			state.user = null 
 		},
 	},
@@ -42,5 +42,5 @@ const userSlice = createSlice({
 
 
 export const { setUser, removeUser } = userSlice.actions;
-
+export { UserState };
 export default userSlice.reducer;

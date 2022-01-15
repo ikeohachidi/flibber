@@ -13,7 +13,7 @@ const sendContactRequest = async (requester: number, email: string) => {
 	return supabase
 		.from('contact_request')
 		.insert([
-			{ requester, invitee: data?.id }
+			{ requester, requestee: data?.id }
 		])
 }
 
