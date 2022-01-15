@@ -2,8 +2,10 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 
-import { authentictedUser, signIn } from 'services/authentication';
+import { authentictedUser } from 'supabase/authentication';
 import RoutePath from 'routes';
+import { signInService } from 'services/authentication';
+import store from 'store';
 
 const Login = () => {
 	const navigation = useNavigate();
@@ -12,16 +14,11 @@ const Login = () => {
 	const password = useRef<HTMLInputElement>(null);
 
 	const loginUserAccount = () => {
-		signIn({ 
+		store.dispatch(signInService({
 			email: email.current?.value as string,
 			password: password.current?.value as string
-		})
-		.then(({ error }) => {
-			if (error) {
-				// TODO: handle error
-				console.log(error);
-				return;
-			}
+		}))
+		.then(() => {
 			navigation(RoutePath.APP)
 		})
 	}

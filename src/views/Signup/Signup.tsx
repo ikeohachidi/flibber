@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
-import { authentictedUser, signUp } from 'services/authentication';
+import { authentictedUser, signUp } from 'supabase/authentication';
 import RoutePath from 'routes';
 
 const Signup = () => {
