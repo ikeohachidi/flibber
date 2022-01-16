@@ -62,6 +62,7 @@ const contact = createSlice({
 			})
 			.addCase(acceptContactRequestService.fulfilled, (state: ContactsState, action) => {
 				if (action.payload) {
+					removeFromContacts(state, 'pendingContacts', action.payload);
 					addContact(state, 'acceptedContacts', action.payload);
 				}
 			})
