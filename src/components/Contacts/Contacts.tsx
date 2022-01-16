@@ -49,13 +49,13 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 
 						<div className="text-xs ml-auto">
 							<button 
-								className="p-2 bg-transparent rounded-l-md rounded-r-none border border-gray-700 border-r-0 text-green-600" 
+								className="p-1 bg-transparent rounded-l-md rounded-r-none border bg-zinc-800  border-gray-700 border-r-0 text-green-600" 
 								onClick={ () => acceptRequest(contact) }
 							>
 								Accept
 							</button>
 							<button 
-								className="p-2 bg-transparent rounded-r-md rounded-l-none border border-gray-700 text-red-500" 
+								className="p-1 bg-transparent rounded-r-md rounded-l-none border bg-zinc-800 border-zinc-700 text-red-600" 
 								onClick={ () => declineRequest(contact) }
 							>
 								Decline
