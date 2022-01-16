@@ -36,14 +36,13 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 
 	return (
 		<ul>
-
 			<li className="flex items-center text-gray-500 px-4 mb-1">
-				<i className="ri-information-line ri-lg"></i>
+				<i className="ri-information-line"></i>
 				<span className="inline-block ml-3 text-xs uppercase">Pending Contacts Request</span>
 			</li>
 			{
 				pendingContacts.map((contact, index) => (
-					<li className={`list-item ${ props.userId === contact.id && 'active'}`} key={ index }>
+					<li className="list-item" key={ index }>
 						<Avatar />
 						<span className="ml-3">{ contact.name }</span>
 
@@ -63,8 +62,38 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 						</div>
 					</li>
 				))
-
 			}
+		</ul>
+	)
+}
+
+type AcceptedContactsProps = {
+	userId: number;
+	showModal: (show: boolean) => void;
+}
+const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
+	const acceptedContacts = useSelector<AppState, User[]>(state => state.contacts.acceptedContacts);
+
+	return (
+		<ul>
+			<li className="flex items-center text-gray-500 px-4 mb-1">
+				<i className="ri-user-line"></i>
+				<span className="inline-block ml-3 text-xs uppercase">Contacts</span>
+			</li>
+			{
+				acceptedContacts.map((contact, index) => (
+					<li className="list-item" key={ index }>
+						<Avatar />
+						<span className="ml-3">{ contact.name }</span>
+					</li>
+				))
+			}
+			<li className="list-item text-gray-400 text-xs">
+				<span className="bg-zinc-800 py-1 px-2 rounded-md flex items-center" onClick={ () => props.showModal(true) }>
+					<i className="ri-add-line"></i>
+					<span className="ml-2 uppercase cursor-pointer">add contact</span>
+				</span>
+			</li>
 		</ul>
 	)
 }
@@ -79,16 +108,11 @@ const Contacts = (): JSX.Element => {
 			<Modal show={ showModal } onClose={ () => setShowModal(false) }>
 				<AddContact user={ activeUser }/>
 			</Modal>
-			<p className="flex items-center text-gray-500 px-4 mb-3">
-				<i className="ri-arrow-down-s-line"></i>
-				<span className="inline-block ml-3 text-xs uppercase">contacts</span>
-			</p>
-			<ul className="mb-3">
-				<li className="list-item text-gray-500 text-xs">
-					<i className="ri-add-line"></i>
-					<span className="ml-2 uppercase cursor-pointer" onClick={ () => setShowModal(true) }>add contact</span>
-				</li>
-			</ul>
+			{	
+				activeUser && activeUser.id
+				? <AcceptedContacts userId={ activeUser.id } showModal={ setShowModal } />
+				: null
+			}
 			{	
 				activeUser && activeUser.id
 				? <PendingContacts userId={ activeUser.id }/>
