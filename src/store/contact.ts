@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchPendingRequestService } from 'services/contact';
 import User from "types/User";
 
-type Action = PayloadAction<User[] | Status>
+type Action<T> = PayloadAction<T>
 
 enum Status {
 	PENDING = 'pending',
@@ -25,11 +25,11 @@ const contact = createSlice({
 	name: 'contact',
 	initialState,
 	reducers: {
-		setAcceptedContacts(state: ContactsState, action: Action) {
-			state.acceptedContacts = action.payload as User[];
+		setAcceptedContacts(state: ContactsState, action: Action<User[]>) {
+			state.acceptedContacts = action.payload;
 		},
-		setPendingContacts(state: ContactsState, action: Action) {
-			state.pendingContacts = action.payload as User[];
+		setPendingContacts(state: ContactsState, action: Action<User[]>) {
+			state.pendingContacts = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
