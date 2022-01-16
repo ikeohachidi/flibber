@@ -27,7 +27,24 @@ const getPendingContactRequest = (userId: number) => {
 		.eq('requestee', userId)
 }
 
+const acceptContactRequest = (userId: number, requester: number) => {
+	return supabase
+		.rpc('accept_contact_request', { 
+			sender: requester, 
+			sendee: userId
+		})
+}
+
+const declineContactRequest = (userId: number, requester: number) => {
+	return supabase
+		.from('contact_request')
+		.delete()
+		.match({ requester, requestee: userId })
+}
+
 export {
 	sendContactRequest,
-	getPendingContactRequest
+	getPendingContactRequest,
+	acceptContactRequest,
+	declineContactRequest
 }
