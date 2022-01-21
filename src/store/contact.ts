@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { acceptContactRequestService, declineContactRequestService, fetchPendingRequestService } from 'services/contact';
+import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 import User from "types/User";
 
 type Action<T> = PayloadAction<T>
@@ -31,8 +31,12 @@ const removeFromContacts = (state: ContactsState, contactType: ContactType, user
 }
 
 
-const addContact = (state: ContactsState, contactType: ContactType, user: User) => {
-	state[contactType].push(user);
+const addContact = (state: ContactsState, contactType: ContactType, payload: User | User[]) => {
+	if (payload.constructor === Array) {
+		state[contactType] = payload;
+		return;
+	}
+	state[contactType].push(payload as User);
 }
 
 const contact = createSlice({
