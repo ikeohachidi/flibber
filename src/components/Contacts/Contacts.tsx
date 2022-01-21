@@ -9,7 +9,7 @@ import AddContact from './AddContact/AddContact';
 
 import store, { AppState } from 'store';
 import { UserState } from 'store/user';
-import { acceptContactRequestService, declineContactRequestService, fetchPendingRequestService } from 'services/contact';
+import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 
 import User from 'types/User';
 
@@ -73,6 +73,10 @@ type AcceptedContactsProps = {
 }
 const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 	const acceptedContacts = useSelector<AppState, User[]>(state => state.contacts.acceptedContacts);
+
+	useEffect(() => {
+		if (props.userId) store.dispatch(fetchAcceptedContactsService(props.userId))
+	}, [])
 
 	return (
 		<ul>

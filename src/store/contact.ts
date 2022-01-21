@@ -54,7 +54,12 @@ const contact = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(fetchPendingRequestService.pending, (state, action) => {
+			.addCase(fetchAcceptedContactsService.fulfilled, (state: ContactsState, action) => {
+				if (action.payload) {
+					addContact(state, 'acceptedContacts', action.payload);
+				}
+			})
+			.addCase(fetchPendingRequestService.pending, (state) => {
 				state.status = Status.PENDING;
 			})
 			.addCase(fetchPendingRequestService.fulfilled, (state: ContactsState, action) => {
@@ -66,7 +71,7 @@ const contact = createSlice({
 					addContact(state, 'acceptedContacts', action.payload);
 				}
 			})
-			.addCase(declineContactRequestService.pending, (state, action) => {
+			.addCase(declineContactRequestService.pending, (state) => {
 				state.status = Status.PENDING;
 			})
 			.addCase(declineContactRequestService.fulfilled, (state: ContactsState, action) => {

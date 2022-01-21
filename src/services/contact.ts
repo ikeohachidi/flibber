@@ -1,7 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import User from "types/User";
 
-import { acceptContactRequest, declineContactRequest, getPendingContactRequest } from "supabase/contact";
+import { acceptContactRequest, declineContactRequest, getAcceptedContactsRequest, getPendingContactRequest } from "supabase/contact";
+
+export const fetchAcceptedContactsService = createAsyncThunk('contact/fetchContactRequest', async (userId: number) => {
+	const { data, error } = await getAcceptedContactsRequest(userId)
+	if (error) return;
+
+	return data;
+})
 
 export const fetchPendingRequestService = createAsyncThunk('contact/fetchPendingRequest', async (userId: number) => {
 	const { data, error } = await getPendingContactRequest(userId);
