@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './Contacts.css';
 
@@ -9,6 +9,7 @@ import AddContact from './AddContact/AddContact';
 
 import store, { AppState } from 'store';
 import { UserState } from 'store/user';
+import { setActiveUserChat } from 'store/chat';
 import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 
 import User from 'types/User';
@@ -72,11 +73,16 @@ type AcceptedContactsProps = {
 	showModal: (show: boolean) => void;
 }
 const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
+	const dispatch = useDispatch();
 	const acceptedContacts = useSelector<AppState, User[]>(state => state.contacts.acceptedContacts);
 
 	useEffect(() => {
 		if (props.userId) store.dispatch(fetchAcceptedContactsService(props.userId))
 	}, [])
+
+	const selectActiveUser = (contact: User) => {
+		dispatch(setActiveUserChat(contact))
+	}
 
 	return (
 		<ul>
@@ -86,7 +92,7 @@ const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 			</li>
 			{
 				acceptedContacts.map((contact, index) => (
-					<li className="list-item" key={ index }>
+					<li className="list-item" key={ index } onClick={ () => selectActiveUser(contact) }>
 						<Avatar />
 						<span className="ml-3">{ contact.name }</span>
 					</li>
