@@ -1,11 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user';
+import userReducer, { UserState } from './user';
 import contactReducer, { ContactsState } from './contact';
 import chatReducer, { ChatState } from './chat';
-import User from 'types/User';
 
 export type AppState = {
-	user: User;
+	user: UserState;
 	contacts: ContactsState; 
 	chat: ChatState;
 }
