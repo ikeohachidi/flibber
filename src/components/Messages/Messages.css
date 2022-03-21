@@ -31,7 +31,7 @@
 }
 
 .message-item-contact {
-	@apply text-lg mb-1;
+	@apply text-lg mb-1 capitalize;
 }
 
 .message-item-unread-count {

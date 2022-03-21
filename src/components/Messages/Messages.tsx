@@ -65,7 +65,7 @@ const ContactsMessage = (): JSX.Element => {
 			{
 				messages.map((message, index) => (
 					<div className="message-item" key={ index }>
-						<div>
+						<div className="mr-2 mt-1">
 							<Avatar/>
 						</div>
 						<div className="message-item-metadata">
