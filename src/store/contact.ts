@@ -60,7 +60,7 @@ const contact = createSlice({
 		builder
 			.addCase(fetchAcceptedContactsService.fulfilled, (state: ContactsState, action) => {
 				if (action.payload) {
-					addContact(state, 'acceptedContacts', action.payload.filter(user => user.id));
+					addContact(state, 'acceptedContacts', action.payload);
 				}
 			})
 			.addCase(fetchPendingRequestService.pending, (state) => {
