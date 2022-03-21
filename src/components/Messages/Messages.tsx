@@ -1,36 +1,54 @@
-import AvatarGroup from 'components/Avatar/AvatarGroup';
-import User, { UserSession } from 'types/User';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { AppState } from 'store';
+import User from 'types/User';
+import Avatar from 'components/Avatar/Avatar';
 import './Messages.css';
 
 const ContactsMessage = (): JSX.Element => {
-	const credentials = {
-		id: 3,
-	}
-	const messages = [
+	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
+	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id)
+
+	const [messages, setMessages] = useState([
 		{
-			contacts: [
-				{ name: 'Hocaha Enyi', id: 3, email: 'hocaha123@gmail.com' },
-				{ name: 'Emmanuel Chukwujindu', id: 2, email: 'emma123@gmail.com' },
-			],
-			lastMessage: {
-				sender: { name: 'Ikeoha Chidi', id: 3, email: 'ikeoha123@gmail.com' },
-				time: '10: 24 AM',
-				text: 'Lorem ipsum dolor imat'
-			},
-			unread: 4
-		},
-		{
-			contacts: [
-				{ name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
-			],
+			contact: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
 			lastMessage: {
 				sender: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
 				time: '10: 24 AM',
 				text: 'Lorem ipsum dolor imat'
 			},
+			isGroup: false,
 			unread: 0,
 		}
-	]
+	])
+
+	useEffect(() => {
+		if (activeChatUser === null) return;
+
+		const index = messages.findIndex(message => message.contact.id === activeChatUser?.id);
+
+		if (index !== -1) {
+			messages.splice(index, 1);
+		}
+
+		setMessages((prevState) => {
+			return [
+				{
+					contact: activeChatUser,
+					lastMessage: {
+						sender: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
+						time: '10: 24 AM',
+						text: 'Lorem ipsum dolor imat'
+					},
+					isGroup: false,
+					unread: 0,
+				},
+				...prevState
+			]
+		})
+
+	}, [ activeChatUser ])
+
 	const contactName = (contacts: User[]) => {
 		return (
 			<p>
@@ -48,16 +66,16 @@ const ContactsMessage = (): JSX.Element => {
 				messages.map((message, index) => (
 					<div className="message-item" key={ index }>
 						<div>
-							<AvatarGroup users={ message.contacts }/>
+							<Avatar/>
 						</div>
 						<div className="message-item-metadata">
 							<div className="message-item-time">{ message.lastMessage.time }</div>
 							<div className="message-item-contact">
-								{ contactName(message.contacts) }
+								{ message.contact.name }
 							</div>
 							<div className="message-item-chat">
 								<p className={`message-item-text ${message.unread === 0 && 'read'}`}>
-								{ message.lastMessage.sender.id === credentials.id
+								{ message.lastMessage.sender.id === authUserId 
 									? 'You: '
 									: `${message.lastMessage.sender.name.split(' ')[0]}: `
 								}
