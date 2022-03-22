@@ -6,6 +6,9 @@ import ChatDetails from './ChatDetails/ChatDetails';
 import { ChatType, Message } from 'types/Message';
 import User, { UserSession } from 'types/User';
 import { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { AppState } from 'store';
+import { UserState } from 'store/user';
 
 
 /**
@@ -33,6 +36,9 @@ const Chat = (props: Props): JSX.Element => {
 		name: 'Ikeoha Chidi',
 		email: 'ikeohachidi@gmail.com'
 	};
+
+	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
+	const authUser = useSelector<AppState, number | undefined>(state => state.user.user?.id);
 
 	const isSignedInUserSender = (sender: User) => sender.id === credentials.id;
 
@@ -84,7 +90,13 @@ const Chat = (props: Props): JSX.Element => {
 				<ChatDetails onCloseClick={ onCloseClick }/>
 			</div>
 			<div className="chat-banner">
-				<span> 🍦 Chat App</span>
+				<span>
+					{
+						activeChatUser
+						? activeChatUser.name
+						: 'No active chat participant' 
+					}
+				</span>
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
 			{
