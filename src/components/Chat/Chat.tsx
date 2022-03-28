@@ -37,8 +37,8 @@ const Chat = (props: Props): JSX.Element => {
 		email: 'ikeohachidi@gmail.com'
 	};
 
-	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
-	const authUser = useSelector<AppState, number | undefined>(state => state.user.user?.id);
+	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat!);
+	const authUserId = useSelector<AppState, number>(state => state.user.user?.id!);
 
 	const isSignedInUserSender = (sender: User) => sender.id === credentials.id;
 
@@ -120,7 +120,11 @@ const Chat = (props: Props): JSX.Element => {
 				))	
 			}
 			<div className="message-input">
-				<MessageInput />
+				<MessageInput 
+					activeChatUser={ activeChatUser }
+					authUserId={ authUserId }
+					
+				/>
 			</div>
 		</section>
 	)
