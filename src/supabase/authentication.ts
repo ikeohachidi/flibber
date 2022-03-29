@@ -1,5 +1,6 @@
 import supabase from "./supabase"
-import User, { Credentials, UserSession } from 'types/User';
+import User, { Credentials } from 'types/User';
+import { User as UserSession } from '@supabase/supabase-js';
 
 import { createUser } from './user';
 import { useEffect, useState } from "react";

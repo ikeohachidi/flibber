@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { authentictedUser } from 'supabase/authentication';
 import { getUser } from 'supabase/user';
 
-import User, { UserSession } from 'types/User';
+import User from 'types/User';
+import { User as UserSession } from '@supabase/supabase-js';
 
 export const useActiveUser = (callback?: (activeuser: UserSession, userMetaData: User | null) => void) => {
 	const [ activeUserMetadata, setActiveUserMetadata ] = useState<User>()

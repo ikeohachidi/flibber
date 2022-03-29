@@ -4,7 +4,7 @@ import Contacts from 'components/Contacts/Contacts';
 import Avatar from "components/Avatar/Avatar";
 
 import { signOut } from 'supabase/authentication';
-import User, { UserSession } from 'types/User';
+import User from 'types/User';
 import { useNavigate } from 'react-router';
 
 import RoutePath from 'routes';

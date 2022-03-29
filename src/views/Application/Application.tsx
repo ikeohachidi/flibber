@@ -33,7 +33,7 @@ const Application = () => {
 				<Messages user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-4">
-				<Chat user={ activeUserMetadata as User  }/>
+				<Chat />
 			</div>
 		</div>
 	)
