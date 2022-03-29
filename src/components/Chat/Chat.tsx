@@ -12,7 +12,6 @@ import { AppState } from 'store';
 import { chatSubscribe, chatUnsubscribe } from 'supabase/chat';
 import { getConversationService } from 'services/chat';
 
-import { Message } from 'types/Message';
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
 
