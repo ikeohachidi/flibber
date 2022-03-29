@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 
 import SideNav from 'components/SideNav/SideNav';
-import Chat from 'components/Chat/Chat';
+import ChatWindow from 'components/ChatWindow/ChatWindow';
 import Messages from 'components/Messages/Messages';
 
 import RoutePath from 'routes';
@@ -33,7 +33,7 @@ const Application = () => {
 				<Messages user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-4">
-				<Chat />
+				<ChatWindow />
 			</div>
 		</div>
 	)

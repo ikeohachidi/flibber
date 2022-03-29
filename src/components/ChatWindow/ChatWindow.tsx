@@ -6,7 +6,7 @@ import MessageInput from './MessageInput/MessageInput';
 import Avatar from 'components/Avatar/Avatar';
 import ChatDetails from './ChatDetails/ChatDetails';
 
-import './Chat.css';
+import './ChatWindow.css';
 
 import { AppState } from 'store';
 import { chatSubscribe, chatUnsubscribe } from 'supabase/chat';
