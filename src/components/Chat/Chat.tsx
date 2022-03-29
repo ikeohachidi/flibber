@@ -1,14 +1,20 @@
-import './Chat.css';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RealtimeSubscription } from '@supabase/supabase-js';
+
 import MessageInput from './MessageInput/MessageInput';
 import Avatar from 'components/Avatar/Avatar';
 import ChatDetails from './ChatDetails/ChatDetails';
 
-import { ChatType, Message } from 'types/Message';
-import User, { UserSession } from 'types/User';
-import { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import './Chat.css';
+
 import { AppState } from 'store';
-import { UserState } from 'store/user';
+import { chatSubscribe, chatUnsubscribe } from 'supabase/chat';
+import { getConversationService } from 'services/chat';
+
+import { Message } from 'types/Message';
+import Chat, { ChatType } from 'types/Chat'
+import User from 'types/User';
 
 
 /**
@@ -17,66 +23,44 @@ import { UserState } from 'store/user';
  * @param Message message object
  * @returns boolean
  */
-const isMessageInAStreak = (messageIndex: number, messages: Message[]) => {
+const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 	if (messages.length === 0 || messageIndex === 0) return false;
 
-	const { sender: presentSender } = messages[messageIndex];
-	const { sender: prevSender }  = messages[messageIndex - 1];
+	const presentChat = messages[messageIndex];
+	const prevChat  = messages[messageIndex - 1];
 
-	return presentSender.id === prevSender.id;
+	return presentChat.from === prevChat.from;
 } 
 
-type Props = {
-	user: User;
-}
-
-const Chat = (props: Props): JSX.Element => {
-	const credentials: User = {
-		id: 3,
-		name: 'Ikeoha Chidi',
-		email: 'ikeohachidi@gmail.com'
-	};
-
-	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat!);
+const ChatWindow = (): JSX.Element => {
+	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
 	const authUserId = useSelector<AppState, number>(state => state.user.user?.id!);
+	const dispatch = useDispatch();
+	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
+	const isSignedInUserSender = (senderId: number) => senderId === authUserId;
 
-	const isSignedInUserSender = (sender: User) => sender.id === credentials.id;
+	let chatSubscription: RealtimeSubscription | null = null;
 
-	const messages: Message[] = [
-		{
-			sender: {
-				id: 3,
-				email: 'ikeohachidi@gmail.com',
-				name: 'Ikeoha Chidi'
-			},
-			chat: {
-				type: ChatType.TEXT,
-				value: 'X gon give it to you'
+	useEffect(() => {
+		if (activeChatUser.id === 0) return;
+
+		dispatch(getConversationService({
+			user1: activeChatUser.id,
+			user2: authUserId,
+			authUser: authUserId
+		}))
+
+		chatSubscribe(authUserId, activeChatUser.id)
+			.then((subscription) => {
+				chatSubscription = subscription;
+			})
+
+		return () => {
+			if (chatSubscription) {
+				chatUnsubscribe(chatSubscription!)
 			}
-		},
-		{
-			sender: {
-				id: 3,
-				email: 'ikeohachidi@gmail.com',
-				name: 'Ikeoha Chidi'
-			},
-			chat: {
-				type: ChatType.TEXT,
-				value: 'He\'s gone give it too you'
-			}
-		},
-		{
-			sender: {
-				id: 2,
-				email: 'chatteta@boommain.com',
-				name: 'Chatetta'
-			},
-			chat: {
-				type: ChatType.TEXT,
-				value: 'You wanna fight me? fight these tears'
-			}
-		},
-	];
+		}
+	}, [ activeChatUser.id, authUserId ])
 
 	const chatDetailsEl = useRef<HTMLDivElement>(null);
 
@@ -100,20 +84,20 @@ const Chat = (props: Props): JSX.Element => {
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
 			{
-				messages.map((message, index) => (
+				conversations.map((conversation, index) => (
 					<div 
-						className={ `chat ${isSignedInUserSender(message.sender) ? 'sending' : 'receiving'}` } 
+						className={ `chat ${isSignedInUserSender(conversation.from) ? 'sending' : 'receiving'}` } 
 						key={ index }
 					>
 						<div className="w-1/12">
-							{ isMessageInAStreak(index, messages) === false 
+							{ isMessageInAStreak(index, conversations) === false 
 								?  <Avatar dimension={ 30 }/>
 								: <span></span> 
 							}
 						</div>
 						<div className="w-11/12 mx-3">
-							{ message.chat.type === ChatType.TEXT &&
-								<p className="text-bubble">{ message.chat.value }</p>
+							{ conversation.message.type === ChatType.TEXT &&
+								<p className="text-bubble">{ conversation.message.value }</p>
 							}
 						</div>
 					</div>
@@ -130,4 +114,4 @@ const Chat = (props: Props): JSX.Element => {
 	)
 }
 
-export default Chat;
+export default ChatWindow;
