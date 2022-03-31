@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from 'store';
 import User from 'types/User';
 import Avatar from 'components/Avatar/Avatar';
-import './Messages.css';
+import './RecentChat.css';
 
 const ContactsMessage = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
@@ -98,7 +98,7 @@ type Props = {
 	user: User;
 }
 
-const Messages = (props: Props): JSX.Element => {
+const RecentChat = (props: Props): JSX.Element => {
 	return (
 		<div className="message-container">
 			<div className="search-wrapper">
@@ -112,4 +112,4 @@ const Messages = (props: Props): JSX.Element => {
 	)
 }
 
-export default Messages;
+export default RecentChat;

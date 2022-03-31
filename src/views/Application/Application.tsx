@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import SideNav from 'components/SideNav/SideNav';
 import ChatWindow from 'components/ChatWindow/ChatWindow';
-import Messages from 'components/Messages/Messages';
+import RecentChat from 'components/RecentChat/RecentChat';
 
 import RoutePath from 'routes';
 import User from 'types/User';
@@ -30,7 +30,7 @@ const Application = () => {
 				<SideNav user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-2">
-				<Messages user={ activeUserMetadata as User }/>
+				<RecentChat user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-4">
 				<ChatWindow />
