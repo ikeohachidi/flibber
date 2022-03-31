@@ -34,7 +34,7 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 
 const onMessageReceived = (dispatch: Dispatch<unknown>, authUserId: number) => {
 	return (payload: SupabaseRealtimePayload<Chat>): void => {
-		if (payload.eventType === 'INSERT') {
+		if (payload.eventType === 'INSERT' && payload.new.from !== authUserId) {
 			dispatch(addMessageToConversation({
 				authUserId,
 				chat: payload.new
