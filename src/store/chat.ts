@@ -28,6 +28,29 @@ const chat = createSlice({
 		},
 		setConversation(state: ChatState, action: Action<{ userId: string, conversation: Chat[] }>) {
 			state.conversation[action.payload.userId] = action.payload.conversation;
+		},
+		addMessageToConversation(state: ChatState, action: Action<{ authUserId: number, chat: Chat }>) {
+			const { authUserId, chat } = action.payload;
+
+			if (authUserId === chat.from) {
+				if (chat.to in state.conversation) {
+					state.conversation[chat.to].push(chat)
+				} else {
+					state.conversation[chat.to] = [chat];
+				}
+
+				return;
+			}
+
+			if (authUserId === chat.to) {
+				if (chat.from in state.conversation) {
+					state.conversation[chat.from].push(chat)
+				} else {
+					state.conversation[chat.from] = [chat];
+				}
+
+				return;
+			}
 		}
 	},
 	extraReducers: builder => {
@@ -47,7 +70,6 @@ const chat = createSlice({
 				state.messageInTransit = true;
 			})
 			.addCase(getConversationService.fulfilled, (state: ChatState, action) => {
-				console.log()
 				if (action.payload && action.payload.data) {
 					const { data, authUser } = action.payload;
 
@@ -70,6 +92,6 @@ const chat = createSlice({
 	}
 })
 
-export const { setActiveUserChat, setConversation } = chat.actions;
+export const { setActiveUserChat, setConversation, addMessageToConversation } = chat.actions;
 export { ChatState };
 export default chat.reducer;

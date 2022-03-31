@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { Dispatch, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RealtimeSubscription } from '@supabase/supabase-js';
+import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 
 import MessageInput from './MessageInput/MessageInput';
 import Avatar from 'components/Avatar/Avatar';
@@ -9,11 +9,12 @@ import ChatDetails from './ChatDetails/ChatDetails';
 import './ChatWindow.css';
 
 import { AppState } from 'store';
-import { chatSubscribe, chatUnsubscribe } from 'supabase/chat';
+import { chatSubscribe } from 'supabase/chat';
 import { getConversationService } from 'services/chat';
 
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
+import { addMessageToConversation } from 'store/chat';
 
 
 /**
@@ -29,7 +30,18 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 	const prevChat  = messages[messageIndex - 1];
 
 	return presentChat.from === prevChat.from;
-} 
+}
+
+const onMessageReceived = (dispatch: Dispatch<unknown>, authUserId: number) => {
+	return (payload: SupabaseRealtimePayload<Chat>): void => {
+		if (payload.eventType === 'INSERT') {
+			dispatch(addMessageToConversation({
+				authUserId,
+				chat: payload.new
+			}))
+		}
+	}
+}
 
 const ChatWindow = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
@@ -38,7 +50,6 @@ const ChatWindow = (): JSX.Element => {
 	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
 	const isSignedInUserSender = (senderId: number) => senderId === authUserId;
 
-	let chatSubscription: RealtimeSubscription | null = null;
 
 	useEffect(() => {
 		if (activeChatUser.id === 0) return;
@@ -49,17 +60,10 @@ const ChatWindow = (): JSX.Element => {
 			authUser: authUserId
 		}))
 
-		chatSubscribe(authUserId, activeChatUser.id)
-			.then((subscription) => {
-				chatSubscription = subscription;
-			})
+		const eventCallback = onMessageReceived(dispatch, authUserId);
+		chatSubscribe(authUserId, activeChatUser.id, eventCallback);
 
-		return () => {
-			if (chatSubscription) {
-				chatUnsubscribe(chatSubscription!)
-			}
-		}
-	}, [ activeChatUser.id, authUserId ])
+	}, [ activeChatUser.id ])
 
 	const chatDetailsEl = useRef<HTMLDivElement>(null);
 

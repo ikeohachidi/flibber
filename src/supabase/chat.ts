@@ -1,7 +1,7 @@
 import supabase from "./supabase";
 
 import Chat from "types/Chat";
-import { RealtimeSubscription } from "@supabase/supabase-js";
+import { RealtimeSubscription, SupabaseRealtimePayload } from "@supabase/supabase-js";
 
 export const sendMessage = async(chat: Chat) => {
 	return supabase
@@ -9,11 +9,11 @@ export const sendMessage = async(chat: Chat) => {
 		.insert(chat)
 }
 
-export const chatSubscribe = async(from: number, to: number) => {
+export const chatSubscribe = async(from: number, to: number, eventCallback: (payload: SupabaseRealtimePayload<Chat>) => void) => {
 	return supabase
-		.from(`chat:from=eq.${from}.and.to=eq.${to}`)
+		.from('chat')
 		.on('*', payload => {
-			console.log(payload)
+			eventCallback(payload);
 		})
 		.subscribe()
 }
