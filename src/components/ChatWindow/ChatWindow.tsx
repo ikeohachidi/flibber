@@ -86,26 +86,28 @@ const ChatWindow = (): JSX.Element => {
 				</span>
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
-			{
-				conversations.map((conversation, index) => (
-					<div 
-						className={ `chat ${isSignedInUserSender(conversation.from) ? 'sending' : 'receiving'}` } 
-						key={ index }
-					>
-						<div className="w-1/12">
-							{ isMessageInAStreak(index, conversations) === false 
-								?  <Avatar dimension={ 30 }/>
-								: <span></span> 
-							}
+			<div className="chat-box">
+				{
+					conversations.map((conversation, index) => (
+						<div 
+							className={ `chat ${isSignedInUserSender(conversation.from) ? 'sending' : 'receiving'}` } 
+							key={ index }
+						>
+							<div className="w-1/12">
+								{ isMessageInAStreak(index, conversations) === false 
+									?  <Avatar dimension={ 30 }/>
+									: <span></span> 
+								}
+							</div>
+							<div className="w-11/12 mx-3">
+								{ conversation.message.type === ChatType.TEXT &&
+									<p className="text-bubble">{ conversation.message.value }</p>
+								}
+							</div>
 						</div>
-						<div className="w-11/12 mx-3">
-							{ conversation.message.type === ChatType.TEXT &&
-								<p className="text-bubble">{ conversation.message.value }</p>
-							}
-						</div>
-					</div>
-				))	
-			}
+					))	
+				}
+			</div>
 			<div className="message-input">
 				<MessageInput 
 					activeChatUser={ activeChatUser }

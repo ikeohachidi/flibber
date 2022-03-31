@@ -19,6 +19,11 @@
 	@apply flex w-1/2 mb-3;
 }
 
+.chat-box {
+	@apply overflow-y-auto;
+	height: calc(100vh - 156px)
+}
+
 .chat-banner {
 	@apply flex justify-between items-center capitalize;
 }
