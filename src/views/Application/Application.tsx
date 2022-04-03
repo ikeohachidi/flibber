@@ -30,7 +30,7 @@ const Application = () => {
 				<SideNav user={ activeUserMetadata as User }/>
 			</div>
 			<div className="col-span-2">
-				<RecentChat user={ activeUserMetadata as User }/>
+				<RecentChat />
 			</div>
 			<div className="col-span-4">
 				<ChatWindow />

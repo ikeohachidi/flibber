@@ -1,53 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { AppState } from 'store';
-import User from 'types/User';
-import Avatar from 'components/Avatar/Avatar';
 import './RecentChat.css';
+
+import Avatar from 'components/Avatar/Avatar';
+import { getRecentChats } from 'supabase/chat';
+import { timeFromNow } from 'utils/date';
+
+import User from 'types/User';
+import { RecentChat } from 'types/Chat';
+
+import { AppState } from 'store';
+
+const getChatParticipant = (chat: RecentChat, userId: number) => {
+	if (chat.from.id === userId) return chat.to;
+	return chat.from;
+}
 
 const ContactsMessage = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
-	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id)
+	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
 
-	const [messages, setMessages] = useState([
-		{
-			contact: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
-			lastMessage: {
-				sender: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
-				time: '10: 24 AM',
-				text: 'Lorem ipsum dolor imat'
-			},
-			isGroup: false,
-			unread: 0,
-		}
-	])
+	const [messages, setMessages] = useState<RecentChat[]>([])
 
 	useEffect(() => {
-		if (activeChatUser === null) return;
+		if (!authUserId) return;
 
-		const index = messages.findIndex(message => message.contact.id === activeChatUser?.id);
+		getRecentChats(authUserId)
+			.then(({ data, error }) => {
+				if (error) return;
 
-		if (index !== -1) {
-			messages.splice(index, 1);
-		}
-
-		setMessages((prevState) => {
-			return [
-				{
-					contact: activeChatUser,
-					lastMessage: {
-						sender: { name: 'JR Smith', id: 4, email: 'jr123@gmail.com' },
-						time: '10: 24 AM',
-						text: 'Lorem ipsum dolor imat'
-					},
-					isGroup: false,
-					unread: 0,
-				},
-				...prevState
-			]
-		})
-
-	}, [ activeChatUser ])
+				setMessages(data as RecentChat[])
+			})
+	}, [ authUserId ])
 
 	const contactName = (contacts: User[]) => {
 		return (
@@ -69,22 +53,15 @@ const ContactsMessage = (): JSX.Element => {
 							<Avatar/>
 						</div>
 						<div className="message-item-metadata">
-							<div className="message-item-time">{ message.lastMessage.time }</div>
+							<div className="message-item-time">{ timeFromNow(message.created_at) }</div>
 							<div className="message-item-contact">
-								{ message.contact.name }
+								{ authUserId && getChatParticipant(message, authUserId).name }
 							</div>
 							<div className="message-item-chat">
-								<p className={`message-item-text ${message.unread === 0 && 'read'}`}>
-								{ message.lastMessage.sender.id === authUserId 
-									? 'You: '
-									: `${message.lastMessage.sender.name.split(' ')[0]}: `
-								}
-								{ message.lastMessage.text }
+								<p className="message-item-text">
+								{ message.from.id === authUserId && 'You: ' }
+								{ message.message.value }
 								</p>
-								{
-									message.unread > 0 &&
-									<span className="message-item-unread-count">{ message.unread }</span>
-								}
 							</div>
 						</div>
 					</div>
@@ -94,11 +71,7 @@ const ContactsMessage = (): JSX.Element => {
 	)
 }
 
-type Props = {
-	user: User;
-}
-
-const RecentChat = (props: Props): JSX.Element => {
+const Recent = (): JSX.Element => {
 	return (
 		<div className="message-container">
 			<div className="search-wrapper">
@@ -112,4 +85,4 @@ const RecentChat = (props: Props): JSX.Element => {
 	)
 }
 
-export default RecentChat;
+export default Recent;

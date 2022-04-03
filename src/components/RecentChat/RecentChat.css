@@ -38,8 +38,8 @@
 	@apply text-xs py-1 px-2 bg-gray-800 text-white rounded-full ml-auto;
 }
 
-.message-item-text.read {
-	@apply text-gray-500;
+.message-item-text {
+	@apply text-gray-400;
 }
 
 .message-item-chat {

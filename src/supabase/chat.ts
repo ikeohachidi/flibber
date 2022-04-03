@@ -1,6 +1,6 @@
 import supabase from "./supabase";
 
-import Chat from "types/Chat";
+import Chat, { RecentChat } from "types/Chat";
 import { RealtimeSubscription, SupabaseRealtimePayload } from "@supabase/supabase-js";
 
 export const sendMessage = async(chat: Chat) => {
@@ -27,4 +27,9 @@ export const getConversation = async(user1: number, user2: number) => {
 		.from<Chat>('chat')
 		.select('*')
 		.or(`from.eq.${user1},and(to.eq.${user2}), from.eq.${user2},and(to.eq.${user1})`)
+}
+
+export const getRecentChats = async(userid: number) => {
+	return supabase
+		.rpc<RecentChat>('get_recent_chats', { userid })
 }
