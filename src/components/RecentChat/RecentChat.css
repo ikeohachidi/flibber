@@ -23,7 +23,7 @@
 
 .message-item {
 	@apply flex text-white;
-	@apply p-4;
+	@apply p-4 cursor-pointer;
 }
 
 .message-item-metadata {

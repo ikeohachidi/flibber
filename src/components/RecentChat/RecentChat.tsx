@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import './RecentChat.css';
 
 import Avatar from 'components/Avatar/Avatar';
@@ -10,6 +10,7 @@ import User from 'types/User';
 import { RecentChat } from 'types/Chat';
 
 import { AppState } from 'store';
+import { setActiveUserChat } from 'store/chat';
 
 const getChatParticipant = (chat: RecentChat, userId: number) => {
 	if (chat.from.id === userId) return chat.to;
@@ -19,6 +20,7 @@ const getChatParticipant = (chat: RecentChat, userId: number) => {
 const ContactsMessage = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
 	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
+	const dispatch = useDispatch();
 
 	const [messages, setMessages] = useState<RecentChat[]>([])
 
@@ -33,7 +35,13 @@ const ContactsMessage = (): JSX.Element => {
 			})
 	}, [ authUserId ])
 
-	const contactName = (contacts: User[]) => {
+	const selectUser = (user?: User) => {
+		if (user) {
+			dispatch(setActiveUserChat(user))
+		}
+	}
+
+	const contactName = (contacts: User[]): JSX.Element => {
 		return (
 			<p>
 				{ contacts.length === 0
@@ -48,7 +56,7 @@ const ContactsMessage = (): JSX.Element => {
 		<ul>
 			{
 				messages.map((message, index) => (
-					<div className="message-item" key={ index }>
+					<div className="message-item" key={ index } onClick={ () => selectUser(getChatParticipant(message, authUserId!)) }>
 						<div className="mr-2 mt-1">
 							<Avatar/>
 						</div>
