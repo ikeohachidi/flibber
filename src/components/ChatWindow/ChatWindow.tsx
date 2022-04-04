@@ -54,11 +54,13 @@ const ChatWindow = (): JSX.Element => {
 	useEffect(() => {
 		if (activeChatUser.id === 0) return;
 
-		dispatch(getConversationService({
-			user1: activeChatUser.id,
-			user2: authUserId,
-			authUser: authUserId
-		}))
+		if (conversations.length === 0) {
+			dispatch(getConversationService({
+				user1: activeChatUser.id,
+				user2: authUserId,
+				authUser: authUserId
+			}))
+		}
 
 		const eventCallback = onMessageReceived(dispatch, authUserId);
 		chatSubscribe(authUserId, activeChatUser.id, eventCallback);
