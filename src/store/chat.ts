@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import User, { UserDefault } from "types/User";
-import Chat from "types/Chat";
-import { getConversationService, sendMessageService } from "services/chat";
+import Chat, { RecentChat } from "types/Chat";
+import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
 
 type Action<T> = PayloadAction<T>;
 
@@ -10,12 +10,16 @@ type ChatState = {
 	conversation: {
 		[userId: string]: Chat[]
 	};
+	recentConversations: {
+		[userId: string]: RecentChat
+	}
 	messageInTransit: boolean
 }
 
 const initialState: ChatState = {
 	activeUserChat: UserDefault,
 	conversation: {},
+	recentConversations: {},
 	messageInTransit: false
 }
 
@@ -88,6 +92,19 @@ const chat = createSlice({
 			})
 			.addCase(getConversationService.pending, (state: ChatState) => {
 				state.messageInTransit = true;
+			})
+			.addCase(getRecentConversations.fulfilled, (state: ChatState, action) => {
+				if (action.payload && action.payload.data) {
+					const { data, authUser } = action.payload;
+
+					action.payload.data.forEach(conversation => {
+						const particpant = conversation.from.id === authUser ? conversation.to : conversation.from 
+
+						if ((particpant.id in state.recentConversations) === false) {
+							state.recentConversations[particpant.id] = conversation;
+						}
+					})
+				}
 			})
 	}
 })

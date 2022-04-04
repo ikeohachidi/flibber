@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import './RecentChat.css';
 
 import Avatar from 'components/Avatar/Avatar';
-import { getRecentChats } from 'supabase/chat';
+
 import { timeFromNow } from 'utils/date';
+import { getRecentConversations } from 'services/chat';
 
 import User from 'types/User';
 import { RecentChat } from 'types/Chat';
@@ -21,18 +22,12 @@ const ContactsMessage = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
 	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
 	const dispatch = useDispatch();
-
-	const [messages, setMessages] = useState<RecentChat[]>([])
+	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
 
 	useEffect(() => {
 		if (!authUserId) return;
 
-		getRecentChats(authUserId)
-			.then(({ data, error }) => {
-				if (error) return;
-
-				setMessages(data as RecentChat[])
-			})
+		dispatch(getRecentConversations(authUserId))
 	}, [ authUserId ])
 
 	const selectUser = (user?: User) => {
@@ -41,21 +36,10 @@ const ContactsMessage = (): JSX.Element => {
 		}
 	}
 
-	const contactName = (contacts: User[]): JSX.Element => {
-		return (
-			<p>
-				{ contacts.length === 0
-					? contacts[0].name
-					: contacts.map((contact, index) => `${contact.name.split(' ')[0]} ${index !== contacts.length-1 ? ', ' : ''}`)
-				}
-			</p>
-		)
-	} 
-
 	return (
 		<ul>
 			{
-				messages.map((message, index) => (
+				recentConversations.map((message, index) => (
 					<div className="message-item" key={ index } onClick={ () => selectUser(getChatParticipant(message, authUserId!)) }>
 						<div className="mr-2 mt-1">
 							<Avatar/>
