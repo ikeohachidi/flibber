@@ -19,7 +19,6 @@ const getChatParticipant = (chat: RecentChat, userId: number) => {
 }
 
 const ContactsMessage = (): JSX.Element => {
-	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
 	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
 	const dispatch = useDispatch();
 	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
