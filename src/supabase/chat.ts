@@ -22,11 +22,11 @@ export const chatUnsubscribe = async(subscription: RealtimeSubscription) => {
 	return supabase.removeSubscription(subscription)
 }
 
-export const getConversation = async(user1: number, user2: number) => {
+export const getConversation = async(chatId: number) => {
 	return supabase	
 		.from<Chat>('chat')
 		.select('*')
-		.or(`from.eq.${user1},and(to.eq.${user2}), from.eq.${user2},and(to.eq.${user1})`)
+		.eq('conversation_id', chatId)
 }
 
 export const getRecentChats = async(userid: number) => {

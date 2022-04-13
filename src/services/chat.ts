@@ -9,12 +9,12 @@ export const sendMessageService = createAsyncThunk('chat/sendMessage', async (ch
 	return chat;
 })
 
-export const getConversationService = createAsyncThunk('chat/getConversation', async(people: { user1: number, user2: number, authUser: number }) => {
-	const { data, error } = await getConversation(people.user1, people.user2);
+export const getConversationService = createAsyncThunk('chat/getConversation', async(payload: { chatId: number, authUser: number }) => {
+	const { data, error } = await getConversation(payload.chatId);
 	if (error) return;
 
 	return {
-		authUser: people.authUser,
+		authUser: payload.authUser,
 		data
 	};
 })

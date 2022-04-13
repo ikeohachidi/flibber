@@ -11,6 +11,7 @@ import './ChatWindow.css';
 import { AppState } from 'store';
 import { chatSubscribe } from 'supabase/chat';
 import { getConversationService } from 'services/chat';
+import { chatId } from 'utils/chat';
 
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
@@ -56,8 +57,7 @@ const ChatWindow = (): JSX.Element => {
 
 		if (conversations.length === 0) {
 			dispatch(getConversationService({
-				user1: activeChatUser.id,
-				user2: authUserId,
+				chatId: chatId(authUserId, activeChatUser.id),
 				authUser: authUserId
 			}))
 		}

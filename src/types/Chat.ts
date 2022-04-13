@@ -14,6 +14,7 @@ export default interface Chat {
 	from: number;
 	to: number;
 	created_at?: string;
+	conversation_id: number;
 	message: Message 
 }
 

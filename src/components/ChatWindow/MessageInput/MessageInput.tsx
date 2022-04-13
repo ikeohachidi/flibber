@@ -1,9 +1,13 @@
 import React, { KeyboardEvent, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+
 import './MessageInput.css';
+
+import { sendMessageService } from 'services/chat';
+import { chatId } from 'utils/chat';
+
 import User from 'types/User';
 import Chat, { ChatType } from 'types/Chat';
-import { useDispatch } from 'react-redux';
-import { sendMessageService } from 'services/chat';
 
 type Props = {
 	activeChatUser: User | null;
@@ -19,6 +23,7 @@ const MessageInput = ({ activeChatUser, authUserId }: Props): JSX.Element => {
 			const chat: Chat = {
 				to: activeChatUser.id,
 				from: authUserId,
+				conversation_id: chatId(authUserId, activeChatUser.id),
 				message: {
 					type: ChatType.TEXT,
 					value: messageInput.current!.value
