@@ -9,7 +9,6 @@ import ChatDetails from './ChatDetails/ChatDetails';
 import './ChatWindow.css';
 
 import { AppState } from 'store';
-import { chatSubscribe } from 'supabase/chat';
 import { getConversationService } from 'services/chat';
 import { chatId } from 'utils/chat';
 
@@ -33,17 +32,6 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 	return presentChat.from === prevChat.from;
 }
 
-const onMessageReceived = (dispatch: Dispatch<unknown>, authUserId: number) => {
-	return (payload: SupabaseRealtimePayload<Chat>): void => {
-		if (payload.eventType === 'INSERT' && payload.new.from !== authUserId) {
-			dispatch(addMessageToConversation({
-				authUserId,
-				chat: payload.new
-			}))
-		}
-	}
-}
-
 const ChatWindow = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
 	const authUserId = useSelector<AppState, number>(state => state.user.user?.id!);
@@ -61,9 +49,6 @@ const ChatWindow = (): JSX.Element => {
 				authUser: authUserId
 			}))
 		}
-
-		const eventCallback = onMessageReceived(dispatch, authUserId);
-		chatSubscribe(authUserId, activeChatUser.id, eventCallback);
 
 	}, [ activeChatUser.id ])
 

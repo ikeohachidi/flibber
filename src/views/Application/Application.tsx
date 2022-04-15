@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 
@@ -10,6 +10,10 @@ import RoutePath from 'routes';
 import User from 'types/User';
 import { useActiveUser } from 'hooks/activeUser';
 import { setUser } from 'store/user';
+import { chatListener } from 'supabase/chat';
+import { addMessageToConversation } from 'store/chat';
+import Chat from 'types/Chat';
+import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 
 const Application = () => {
 	const navigation = useNavigate();
@@ -23,6 +27,17 @@ const Application = () => {
 
 		dispatch(setUser( userMetadata ))
 	});
+
+	useEffect(() => {
+		if (activeUserMetadata) {
+			chatListener(activeUserMetadata?.id, (payload: SupabaseRealtimePayload<Chat>) => {
+				dispatch(addMessageToConversation({ 
+					authUserId: activeUserMetadata.id, 
+					chat: payload.new
+				}))
+			})
+		}
+	}, [ activeUserMetadata ])
 
 	return (
 		<div className="App grid grid-cols-8">

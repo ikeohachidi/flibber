@@ -9,13 +9,21 @@ export const sendMessage = async(chat: Chat) => {
 		.insert(chat)
 }
 
-export const chatSubscribe = async(from: number, to: number, eventCallback: (payload: SupabaseRealtimePayload<Chat>) => void) => {
-	return supabase
-		.from('chat')
+export const chatListener = async(userId: number, eventCallback: (payload: SupabaseRealtimePayload<Chat>) => void) => {
+	const connect = supabase
+		.from(`chat:to=eq.${userId}`)
 		.on('*', payload => {
 			eventCallback(payload);
 		})
-		.subscribe()
+		.subscribe(() => {
+			console.log('realtime connection established')
+		})
+	
+	connect.onError(() => {
+		connect.rejoin()
+	})
+
+	return connect;
 }
 
 export const chatUnsubscribe = async(subscription: RealtimeSubscription) => {
