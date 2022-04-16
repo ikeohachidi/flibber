@@ -3,8 +3,6 @@ import User, { UserDefault } from "types/User";
 import Chat, { RecentChat } from "types/Chat";
 import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
 
-type Action<T> = PayloadAction<T>;
-
 type ChatState = {
 	activeUserChat: User;
 	conversation: {
@@ -24,13 +22,13 @@ const initialState: ChatState = {
 }
 
 const reducers = {
-	setActiveUserChat(state: ChatState, action: Action<User>) {
+	setActiveUserChat(state: ChatState, action: PayloadAction<User>) {
 		state.activeUserChat = action.payload;
 	},
-	setConversation(state: ChatState, action: Action<{ userId: string, conversation: Chat[] }>) {
+	setConversation(state: ChatState, action: PayloadAction<{ userId: string, conversation: Chat[] }>) {
 		state.conversation[action.payload.userId] = action.payload.conversation;
 	},
-	addMessageToConversation(state: ChatState, action: Action<{ authUserId: number, chat: Chat }>) {
+	addMessageToConversation(state: ChatState, action: PayloadAction<{ authUserId: number, chat: Chat }>) {
 		const { authUserId, chat } = action.payload;
 
 		if (authUserId === chat.from) {
@@ -53,7 +51,7 @@ const reducers = {
 			return;
 		}
 	},
-	setRecentConversation(state: ChatState, action: Action<{ authUserId: number, conversation: RecentChat }>) {
+	setRecentConversation(state: ChatState, action: PayloadAction<{ authUserId: number, conversation: RecentChat }>) {
 		
 		const { authUserId, conversation }	= action.payload;
 

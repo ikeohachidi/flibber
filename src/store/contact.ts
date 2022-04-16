@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 import User from "types/User";
 
-type Action<T> = PayloadAction<T>
 
 enum Status {
 	PENDING = 'pending',
@@ -43,16 +42,16 @@ const contact = createSlice({
 	name: 'contact',
 	initialState,
 	reducers: {
-		setAcceptedContacts(state: ContactsState, action: Action<User[]>) {
+		setAcceptedContacts(state: ContactsState, action: PayloadAction<User[]>) {
 			state.acceptedContacts = action.payload;
 		},
-		setPendingContacts(state: ContactsState, action: Action<User[]>) {
+		setPendingContacts(state: ContactsState, action: PayloadAction<User[]>) {
 			state.pendingContacts = action.payload;
 		},
-		removePendingContact(state: ContactsState, action: Action<User>) {
+		removePendingContact(state: ContactsState, action: PayloadAction<User>) {
 			removeFromContacts(state, 'pendingContacts', action.payload)
 		},
-		addAcceptedContact(state: ContactsState, action: Action<User>) {
+		addAcceptedContact(state: ContactsState, action: PayloadAction<User>) {
 			addContact(state, 'acceptedContacts', action.payload);
 		}
 	},
