@@ -42,7 +42,8 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 				<span className="inline-block ml-3 text-xs uppercase">Pending Contacts Request</span>
 			</li>
 			{
-				pendingContacts.map((contact, index) => (
+				pendingContacts.length > 0
+				? pendingContacts.map((contact, index) => (
 					<li className="list-item" key={ index }>
 						<Avatar />
 						<span className="ml-3">{ contact.name }</span>
@@ -63,6 +64,7 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 						</div>
 					</li>
 				))
+				: <li className="list-item">No pending contacts</li>
 			}
 		</ul>
 	)
