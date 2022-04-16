@@ -10,7 +10,7 @@ import { ChatType, RecentChat } from 'types/Chat';
 import { timeNow } from 'utils/date';
 
 type Props = {
-	activeChatUser: User | null;
+	activeChatUser: User;
 	authUser: User;
 }
 
@@ -39,9 +39,10 @@ const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
 	}
 
 	return (
-		<div className="message-input-container">
+		<div className={ `message-input-container ${ activeChatUser.id < 1 && 'disabled' }` }>
 			<i className="ri-mic-2-line"></i>
 			<input 
+				disabled={ activeChatUser.id < 1 }
 				className="custom" 
 				type="text" 
 				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
