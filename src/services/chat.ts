@@ -1,12 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getConversation, getRecentChats, sendMessage } from "supabase/chat";
-import Chat from "types/Chat";
+import Chat, { RecentChat } from "types/Chat";
+import { chatId } from "utils/chat";
 
-export const sendMessageService = createAsyncThunk('chat/sendMessage', async (chat: Chat) => {
+export const sendMessageService = createAsyncThunk('chat/sendMessage', async (recent: RecentChat) => {
+	const chat: Chat = {
+		to: recent.to.id,
+		from: recent.from.id,
+		conversation_id: chatId(recent.to.id, recent.from.id),
+		message: recent.message
+	}
+
 	const { error } = await sendMessage(chat);
 	if (error) return;
 
-	return chat;
+	return {
+		chat,
+		recentChat: recent
+	}
 })
 
 export const getConversationService = createAsyncThunk('chat/getConversation', async(payload: { chatId: number, authUser: number }) => {

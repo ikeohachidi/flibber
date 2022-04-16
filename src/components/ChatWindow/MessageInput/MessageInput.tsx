@@ -7,14 +7,14 @@ import { sendMessageService } from 'services/chat';
 import { chatId } from 'utils/chat';
 
 import User from 'types/User';
-import Chat, { ChatType } from 'types/Chat';
+import Chat, { ChatType, RecentChat } from 'types/Chat';
 
 type Props = {
 	activeChatUser: User | null;
-	authUserId: number;
+	authUser: User;
 }
 
-const MessageInput = ({ activeChatUser, authUserId }: Props): JSX.Element => {
+const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
 	const dispatch = useDispatch();
 
 	const sendMessage = (e: KeyboardEvent) => {

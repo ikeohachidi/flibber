@@ -1,6 +1,5 @@
-import { Dispatch, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 
 import MessageInput from './MessageInput/MessageInput';
 import Avatar from 'components/Avatar/Avatar';
@@ -14,7 +13,6 @@ import { chatId } from 'utils/chat';
 
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
-import { addMessageToConversation } from 'store/chat';
 
 
 /**
@@ -34,10 +32,10 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 
 const ChatWindow = (): JSX.Element => {
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
-	const authUserId = useSelector<AppState, number>(state => state.user.user?.id!);
+	const authUser = useSelector<AppState, User>(state => state.user.user!);
 	const dispatch = useDispatch();
 	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
-	const isSignedInUserSender = (senderId: number) => senderId === authUserId;
+	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
 
 
 	useEffect(() => {
@@ -45,8 +43,8 @@ const ChatWindow = (): JSX.Element => {
 
 		if (conversations.length === 0) {
 			dispatch(getConversationService({
-				chatId: chatId(authUserId, activeChatUser.id),
-				authUser: authUserId
+				chatId: chatId(authUser.id, activeChatUser.id),
+				authUser: authUser.id
 			}))
 		}
 
@@ -98,7 +96,7 @@ const ChatWindow = (): JSX.Element => {
 			<div className="message-input">
 				<MessageInput 
 					activeChatUser={ activeChatUser }
-					authUserId={ authUserId }
+					authUser={ authUser }
 					
 				/>
 			</div>

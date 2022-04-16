@@ -23,49 +23,71 @@ const initialState: ChatState = {
 	messageInTransit: false
 }
 
+const reducers = {
+	setActiveUserChat(state: ChatState, action: Action<User>) {
+		state.activeUserChat = action.payload;
+	},
+	setConversation(state: ChatState, action: Action<{ userId: string, conversation: Chat[] }>) {
+		state.conversation[action.payload.userId] = action.payload.conversation;
+	},
+	addMessageToConversation(state: ChatState, action: Action<{ authUserId: number, chat: Chat }>) {
+		const { authUserId, chat } = action.payload;
+
+		if (authUserId === chat.from) {
+			if (chat.to in state.conversation) {
+				state.conversation[chat.to].push(chat)
+			} else {
+				state.conversation[chat.to] = [chat];
+			}
+
+			return;
+		}
+
+		if (authUserId === chat.to) {
+			if (chat.from in state.conversation) {
+				state.conversation[chat.from].push(chat)
+			} else {
+				state.conversation[chat.from] = [chat];
+			}
+
+			return;
+		}
+	},
+	setRecentConversation(state: ChatState, action: Action<{ authUserId: number, conversation: RecentChat }>) {
+		
+		const { authUserId, conversation }	= action.payload;
+
+		const particpant = conversation.from.id === authUserId ? conversation.to : conversation.from;
+
+		state.recentConversations[particpant.id] = conversation;
+	}
+}
+
 const chat = createSlice({
 	name: 'chat',
 	initialState,
-	reducers: {
-		setActiveUserChat(state: ChatState, action: Action<User>) {
-			state.activeUserChat = action.payload;
-		},
-		setConversation(state: ChatState, action: Action<{ userId: string, conversation: Chat[] }>) {
-			state.conversation[action.payload.userId] = action.payload.conversation;
-		},
-		addMessageToConversation(state: ChatState, action: Action<{ authUserId: number, chat: Chat }>) {
-			const { authUserId, chat } = action.payload;
-
-			if (authUserId === chat.from) {
-				if (chat.to in state.conversation) {
-					state.conversation[chat.to].push(chat)
-				} else {
-					state.conversation[chat.to] = [chat];
-				}
-
-				return;
-			}
-
-			if (authUserId === chat.to) {
-				if (chat.from in state.conversation) {
-					state.conversation[chat.from].push(chat)
-				} else {
-					state.conversation[chat.from] = [chat];
-				}
-
-				return;
-			}
-		}
-	},
+	reducers,
 	extraReducers: builder => {
 		builder
 			.addCase(sendMessageService.fulfilled, (state: ChatState, action) => {
 				if (action.payload) {
-					if (action.payload.to in state.conversation) {
-						state.conversation[action.payload.to].push(action.payload);
-					} else {
-						state.conversation[action.payload.to] = [ action.payload ];
-					}
+					const { recentChat, chat } = action.payload;
+
+					reducers.addMessageToConversation(state, {
+						payload: {
+							authUserId: chat.from,
+							chat,
+						},
+						type: 'chat/addMessageToConversation'
+					})
+
+					reducers.setRecentConversation(state, { 
+						payload: {
+							authUserId: chat.from,
+							conversation: recentChat 
+						},
+						type: 'chat/setRecentConversation'
+					})					
 
 					state.messageInTransit = false;
 				}
@@ -95,7 +117,7 @@ const chat = createSlice({
 			})
 			.addCase(getRecentConversations.fulfilled, (state: ChatState, action) => {
 				if (action.payload && action.payload.data) {
-					const { data, authUser } = action.payload;
+					const { authUser } = action.payload;
 
 					action.payload.data.forEach(conversation => {
 						const particpant = conversation.from.id === authUser ? conversation.to : conversation.from 
@@ -109,6 +131,6 @@ const chat = createSlice({
 	}
 })
 
-export const { setActiveUserChat, setConversation, addMessageToConversation } = chat.actions;
+export const { setActiveUserChat, setConversation, addMessageToConversation, setRecentConversation } = chat.actions;
 export { ChatState };
 export default chat.reducer;
