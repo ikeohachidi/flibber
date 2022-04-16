@@ -1,13 +1,13 @@
-import React, { KeyboardEvent, useRef } from 'react';
+import React, { KeyboardEvent } from 'react';
 import { useDispatch } from 'react-redux';
 
 import './MessageInput.css';
 
 import { sendMessageService } from 'services/chat';
-import { chatId } from 'utils/chat';
 
 import User from 'types/User';
-import Chat, { ChatType, RecentChat } from 'types/Chat';
+import { ChatType, RecentChat } from 'types/Chat';
+import { timeNow } from 'utils/date';
 
 type Props = {
 	activeChatUser: User | null;
@@ -26,7 +26,7 @@ const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
 			const chat: RecentChat = {
 				to: activeChatUser,
 				from: authUser,
-				created_at: '0',
+				created_at: timeNow(),
 				message: {
 					type: ChatType.TEXT,
 					value: target.value 
