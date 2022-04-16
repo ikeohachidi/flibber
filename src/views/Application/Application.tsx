@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -35,10 +35,10 @@ const Application = () => {
 		return users.find(user => user.id === from);
 	}
 
-	let chatInitialised = false;
+	let chatInitialised = useRef<boolean>(false);
 
 	useEffect(() => {
-		if (activeUserMetadata && users.length > 0 && !chatInitialised) {
+		if (activeUserMetadata && users.length > 0 && !chatInitialised.current) {
 			chatListener(activeUserMetadata?.id, (payload: SupabaseRealtimePayload<Chat>) => {
 				const { from } = payload.new;
 				const fromUser = findUser(from)
@@ -61,7 +61,7 @@ const Application = () => {
 				}))
 			})
 			.then(() => {
-				chatInitialised = true;
+				chatInitialised.current = true;
 			})
 		}
 	}, [ activeUserMetadata, users ])
