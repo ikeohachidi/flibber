@@ -16,22 +16,25 @@ type Props = {
 
 const MessageInput = ({ activeChatUser, authUserId }: Props): JSX.Element => {
 	const dispatch = useDispatch();
-	const messageInput = useRef<HTMLInputElement>(null);
 
 	const sendMessage = (e: KeyboardEvent) => {
+		const target = e.target as HTMLInputElement;
+
+		if (target.value === '') return;
+
 		if (e.key === 'Enter' && activeChatUser) {
-			const chat: Chat = {
-				to: activeChatUser.id,
-				from: authUserId,
-				conversation_id: chatId(authUserId, activeChatUser.id),
+			const chat: RecentChat = {
+				to: activeChatUser,
+				from: authUser,
+				created_at: '0',
 				message: {
 					type: ChatType.TEXT,
-					value: messageInput.current!.value
+					value: target.value 
 				}
 			}
 
-			dispatch(sendMessageService(chat))	
-			messageInput.current!.value = '';
+			dispatch(sendMessageService(chat))
+			target.value = '';
 		}
 	}
 
@@ -43,7 +46,6 @@ const MessageInput = ({ activeChatUser, authUserId }: Props): JSX.Element => {
 				type="text" 
 				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
 				onKeyDown={ sendMessage }
-				ref={ messageInput }
 			/>
 			<i className="ri-add-line mx-4"></i>
 			<i className="ri-send-plane-line"></i>
