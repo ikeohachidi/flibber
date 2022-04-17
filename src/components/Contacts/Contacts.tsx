@@ -35,6 +35,8 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 			})
 	}
 
+	if (pendingContacts.length === 0) return <></>;
+
 	return (
 		<ul>
 			<li className="flex items-center text-gray-500 px-4 mb-1">
@@ -42,8 +44,7 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 				<span className="inline-block ml-3 text-xs uppercase">Pending Contacts Request</span>
 			</li>
 			{
-				pendingContacts.length > 0
-				? pendingContacts.map((contact, index) => (
+				pendingContacts.map((contact, index) => (
 					<li className="list-item" key={ index }>
 						<Avatar />
 						<span className="ml-3">{ contact.name }</span>
@@ -64,7 +65,6 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 						</div>
 					</li>
 				))
-				: <li className="list-item">No pending contacts</li>
 			}
 		</ul>
 	)
