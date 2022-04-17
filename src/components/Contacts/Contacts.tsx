@@ -19,7 +19,7 @@ const PendingContacts = (props: { userId: number }): JSX.Element => {
 
 	useEffect(() => {
 		if (props.userId) store.dispatch(fetchPendingRequestService(props.userId))
-	}, [])
+	}, [props.userId])
 
 	const acceptRequest = (contact: User) => {
 		store.dispatch(acceptContactRequestService({ userId: props.userId, requester: contact }))
@@ -80,7 +80,7 @@ const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 
 	useEffect(() => {
 		if (props.userId) store.dispatch(fetchAcceptedContactsService(props.userId))
-	}, [])
+	}, [props.userId])
 
 	const selectActiveUser = (contact: User) => {
 		dispatch(setActiveUserChat(contact))
