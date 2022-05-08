@@ -41,3 +41,12 @@ export const getRecentChats = async(userid: number) => {
 	return supabase
 		.rpc<RecentChat>('get_recent_chats', { userid })
 }
+
+export const findMessage = async(text: string, userId: number) => {
+	return supabase
+		.from<Chat>('chat')
+		.select(`*`)
+		// @ts-expect-error 
+		.eq('message->value', JSON.stringify(text))
+		.or(`from.eq.${userId},to.eq.${userId}`)
+}

@@ -1,0 +1,12 @@
+.message-search {
+	background-color: var(--color-dark-highlight);
+	@apply flex items-center p-3 rounded-md;
+}
+
+.message-search i {
+	@apply text-white;
+}
+
+.message-search input {
+	@apply bg-transparent ml-3 w-full border-none p-0 focus:outline-none text-white;
+}

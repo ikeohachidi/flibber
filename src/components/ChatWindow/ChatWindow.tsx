@@ -14,7 +14,6 @@ import { chatId } from 'utils/chat';
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
 
-
 /**
  * checks if a single user has sent consecutive messages without another
  * person sending a message
