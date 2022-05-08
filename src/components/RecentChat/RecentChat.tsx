@@ -14,32 +14,23 @@ import Chat, { RecentChat } from 'types/Chat';
 import { AppState } from 'store';
 import { setActiveUserChat } from 'store/chat';
 
-const getChatParticipant = (chat: RecentChat, userId: number) => {
-	if (chat.from.id === userId) return chat.to;
-	return chat.from;
+type ContactsMessageProps = {
+	authUserId: number;
+	recentConversations: RecentChat[];
+	onUserClick: (user: User) => void;
 }
 
-const ContactsMessage = ({ authUserId }: { authUserId: number }): JSX.Element => {
-	const dispatch = useDispatch();
-	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
-
-	useEffect(() => {
-		if (!authUserId) return;
-
-		dispatch(getRecentConversations(authUserId))
-	}, [ authUserId ])
-
-	const selectUser = (user?: User) => {
-		if (user) {
-			dispatch(setActiveUserChat(user))
-		}
+const ContactsMessage = ({ authUserId, recentConversations, onUserClick }: ContactsMessageProps): JSX.Element => {
+	const getChatParticipant = (chat: RecentChat, userId: number) => {
+		if (chat.from.id === userId) return chat.to;
+		return chat.from;
 	}
 
 	return (
 		<ul>
 			{
 				recentConversations.map((message, index) => (
-					<div className="message-item" key={ index } onClick={ () => selectUser(getChatParticipant(message, authUserId!)) }>
+					<div className="message-item" key={ index } onClick={ () => onUserClick(getChatParticipant(message, authUserId!)) }>
 						<div className="mr-2 mt-1">
 							<Avatar/>
 						</div>
@@ -63,14 +54,12 @@ const ContactsMessage = ({ authUserId }: { authUserId: number }): JSX.Element =>
 type SearchResultProps = {
 	authUserId: number;
 	results: Chat[];
+	contacts: User[];
 }
 
-const SearchResult = ({ authUserId, results }: SearchResultProps): JSX.Element => {
-	const contacts = useSelector((state: AppState) => state.contacts.acceptedContacts);
-
+const SearchResult = ({ authUserId, results, contacts }: SearchResultProps): JSX.Element => {
 	const findParticipant = (result: Chat) => {
 		const participant = result.from === authUserId ? result.to : result.from;
-
 		return contacts.find(contact => contact.id === participant);
 	}
 
@@ -96,9 +85,26 @@ const SearchResult = ({ authUserId, results }: SearchResultProps): JSX.Element =
 }
 
 const Recent = (): JSX.Element => {
+	const dispatch = useDispatch();
+
 	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
+	const contacts = useSelector((state: AppState) => state.contacts.acceptedContacts);
+	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
+
 	const [searchResults, setSearchResult] = useState<Chat[]>([]);
 	const [ searchText, setSearchText ] = useState('');
+
+	useEffect(() => {
+		if (!authUserId) return;
+
+		dispatch(getRecentConversations(authUserId))
+	}, [ authUserId ])
+
+	const selectUser = (user?: User) => {
+		if (user) {
+			dispatch(setActiveUserChat(user))
+		}
+	}
 
 	const displaySearchResult = () => {
 		return searchText && (searchResults && searchResults.length > 0)
@@ -116,11 +122,14 @@ const Recent = (): JSX.Element => {
 			{
 				displaySearchResult()
 				?  <SearchResult
+					contacts={ contacts }
 					results={ searchResults }
 					authUserId={ authUserId! }
 				/>
-				: <ContactsMessage 
+				: <ContactsMessage
+					recentConversations={ recentConversations }
 					authUserId={ authUserId! }
+					onUserClick={ selectUser }
 				/>
 			}
 		</div>
