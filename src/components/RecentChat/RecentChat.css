@@ -14,7 +14,7 @@
 }
 
 .message-item-metadata {
-	@apply relative w-full;
+	@apply w-full;
 }
 
 .message-item-contact {
@@ -27,7 +27,7 @@
 
 .message-item-chat {
 	@apply text-gray-400;
-	@apply flex w-full;
+	@apply flex w-full relative;
 }
 
 .message-item-time {
