@@ -7,18 +7,27 @@ type Props = {
 	onSearchResultReturned: (result: Chat[]) => void;
 	onSearchTextChange: (text: string) => void;
 	authUserId: number;
+	onSearch: (isLoading: boolean) => void;
 }
 
 const MessageSearch = (props: Props): JSX.Element => {
 
 	const searchMessages = (e: HTMLInputElement) => {
 		props.onSearchTextChange(e.value)
-		if (e.value === '') return;
+		if (e.value === '') {
+			props.onSearchResultReturned([]);
+			return
+		} 
+
+		props.onSearch(true)
 
 		findMessage(e.value, props.authUserId)
 			.then((res) => {
 				if (res.data) props.onSearchResultReturned(res.data)
 				else props.onSearchResultReturned([])
+			})
+			.finally(() => {
+				props.onSearch(false)
 			})
 	}
 
