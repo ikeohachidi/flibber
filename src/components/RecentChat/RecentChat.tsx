@@ -69,6 +69,7 @@ const SearchResult = ({ authUserId, results, contacts }: SearchResultProps): JSX
 				results.map((result, index) => (
 					<li key={ index } className="message-item">
 						<div className="message-item-metadata">
+							<div className="message-item-time">{ timeFromNow(result.created_at!) }</div>
 							<div className="message-item-contact">
 								{ (authUserId && findParticipant(result)) && findParticipant(result)?.name }
 							</div>
