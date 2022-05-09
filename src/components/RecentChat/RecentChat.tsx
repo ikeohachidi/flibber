@@ -35,13 +35,15 @@ const ContactsMessage = ({ authUserId, recentConversations, onUserClick }: Conta
 							<Avatar/>
 						</div>
 						<div className="message-item-metadata">
-							<div className="message-item-time">{ timeFromNow(message.created_at) }</div>
 							<div className="message-item-contact">
 								{ authUserId && getChatParticipant(message, authUserId).name }
 							</div>
 							<div className="message-item-chat">
-								{ message.from.id === authUserId && 'You: ' }
-								{ message.message.value }
+								<p>
+									{ message.from.id === authUserId && 'You: ' }
+									{ message.message.value }
+								</p>
+								<div className="message-item-time">{ timeFromNow(message.created_at) }</div>
 							</div>
 						</div>
 					</div>
@@ -60,25 +62,57 @@ type SearchResultProps = {
 const SearchResult = ({ authUserId, results, contacts }: SearchResultProps): JSX.Element => {
 	const findParticipant = (result: Chat) => {
 		const participant = result.from === authUserId ? result.to : result.from;
-		return contacts.find(contact => contact.id === participant);
+		return getContact(participant);
+	}
+
+	const getContact = (userId: number) => {
+		return contacts.find(contact => contact.id === userId);
+	}
+
+	const groupResultsByUser = () => {
+		const body: {user: User; messages: Chat[]}[] = [];
+		const lookup: {[email: string]: number} = {};
+
+		results.forEach(result => {
+			const participant = findParticipant(result)!;
+
+			if (participant.email in lookup) {
+				const index = lookup[participant.email];
+				body[index].messages.push(result)
+			} else {
+				lookup[participant.email] = body.length;
+				body.push({
+					user: participant,
+					messages: [ result ]
+				})
+			}
+		})
+
+		return body;
 	}
 
 	return (
 		<ul>
 			{
-				results.map((result, index) => (
+				groupResultsByUser().map((result, index) => (
 					<li key={ index } className="message-item">
 						<div className="message-item-metadata">
-							<div className="message-item-time">{ timeFromNow(result.created_at!) }</div>
 							<div className="message-item-contact">
-								{ (authUserId && findParticipant(result)) && findParticipant(result)?.name }
+								{ getContact(result.user.id)?.name }
 							</div>
-							<div className="message-item-chat">
-								{ result.from === authUserId && 'You: ' }
-								{ result.message.value }
-							</div>
+							{
+								result.messages.map((message, mIndex) => (
+									<div className="message-item-chat my-2" key={`m-${mIndex}`}>
+										<p>
+											{ message.from === authUserId && 'You: ' }
+											{ message.message.value }
+										</p>
+										<div className="message-item-time">{ timeFromNow(message.created_at!) }</div>
+									</div>
+								))
+							}
 						</div>
-					</li>
+					</li>		
 				))
 			}
 		</ul>
