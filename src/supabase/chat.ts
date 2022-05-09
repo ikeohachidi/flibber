@@ -47,6 +47,6 @@ export const findMessage = async(text: string, userId: number) => {
 		.from<Chat>('chat')
 		.select(`*`)
 		// @ts-expect-error 
-		.eq('message->value', JSON.stringify(text))
+		.ilike('message->>value', `%${text}%`)
 		.or(`from.eq.${userId},to.eq.${userId}`)
 }
