@@ -91,8 +91,9 @@ const Recent = (): JSX.Element => {
 	const contacts = useSelector((state: AppState) => state.contacts.acceptedContacts);
 	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
 
-	const [searchResults, setSearchResult] = useState<Chat[]>([]);
+	const [ searchResults, setSearchResult ] = useState<Chat[]>([]);
 	const [ searchText, setSearchText ] = useState('');
+	const [ isSearching, setIsSearching ] = useState(false);
 
 	useEffect(() => {
 		if (!authUserId) return;
@@ -106,8 +107,31 @@ const Recent = (): JSX.Element => {
 		}
 	}
 
-	const displaySearchResult = () => {
-		return searchText && (searchResults && searchResults.length > 0)
+	const onMessageSearch = (isSearching: boolean): void => {
+		setIsSearching(isSearching);
+	}
+
+	let recentChatBody: JSX.Element;
+
+	if (isSearching) {
+		recentChatBody = <p className="px-3 text-white">Searching Messages please wait</p>
+	} 
+	else if (!isSearching && searchText !== '' && searchResults.length === 0) {
+		recentChatBody = <p className="px-3 text-white">Search returned no results</p>
+	} 
+	else if (searchResults.length > 0 && searchText !== '') {
+		recentChatBody = <SearchResult
+			contacts={ contacts }
+			results={ searchResults }
+			authUserId={ authUserId! }
+		/>
+	} 
+	else {
+		recentChatBody = <ContactsMessage
+			recentConversations={ recentConversations }
+			authUserId={ authUserId! }
+			onUserClick={ selectUser }
+		/>
 	}
 
 	return (
@@ -117,21 +141,10 @@ const Recent = (): JSX.Element => {
 					onSearchResultReturned={ setSearchResult }
 					onSearchTextChange={ setSearchText }
 					authUserId={ authUserId! }
+					onSearch={ onMessageSearch }
 				/>
 			</div>
-			{
-				displaySearchResult()
-				?  <SearchResult
-					contacts={ contacts }
-					results={ searchResults }
-					authUserId={ authUserId! }
-				/>
-				: <ContactsMessage
-					recentConversations={ recentConversations }
-					authUserId={ authUserId! }
-					onUserClick={ selectUser }
-				/>
-			}
+			{ recentChatBody }
 		</div>
 	)
 }
