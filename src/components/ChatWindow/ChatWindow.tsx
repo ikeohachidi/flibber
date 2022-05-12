@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import MessageInput from './MessageInput/MessageInput';
 import Avatar from 'components/Avatar/Avatar';
 import ChatDetails from './ChatDetails/ChatDetails';
+import Spinner from 'components/Spinner/Spinner';
 
 import './ChatWindow.css';
 
@@ -35,7 +36,7 @@ const ChatWindow = (): JSX.Element => {
 	const dispatch = useDispatch();
 	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
 	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
-
+	const isFetchingConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingConversation);
 
 	useEffect(() => {
 		if (activeChatUser.id === 0) return;
@@ -57,6 +58,13 @@ const ChatWindow = (): JSX.Element => {
 
 	return (
 		<section className="chat-container">
+			{
+				isFetchingConversation &&
+				<Spinner 
+					fullSize={ true }
+				/>
+			}
+
 			<div className="chat-details hide" ref={ chatDetailsEl }>
 				<ChatDetails onCloseClick={ onCloseClick }/>
 			</div>
@@ -70,6 +78,7 @@ const ChatWindow = (): JSX.Element => {
 				</span>
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
+
 			<div className="chat-box">
 				{
 					conversations.map((conversation, index) => (

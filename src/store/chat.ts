@@ -11,14 +11,16 @@ type ChatState = {
 	recentConversations: {
 		[userId: string]: RecentChat
 	}
-	messageInTransit: boolean
+	messageInTransit: boolean,
+	isFetchingConversation: boolean
 }
 
 const initialState: ChatState = {
 	activeUserChat: UserDefault,
 	conversation: {},
 	recentConversations: {},
-	messageInTransit: false
+	messageInTransit: false,
+	isFetchingConversation: false
 }
 
 const reducers = {
@@ -108,10 +110,14 @@ const chat = createSlice({
 							break;
 						}
 					}
+					state.isFetchingConversation = false;
 				}
 			})
+			.addCase(getConversationService.rejected, (state: ChatState) => {
+				state.isFetchingConversation = false;
+			})
 			.addCase(getConversationService.pending, (state: ChatState) => {
-				state.messageInTransit = true;
+				state.isFetchingConversation = true;
 			})
 			.addCase(getRecentConversations.fulfilled, (state: ChatState, action) => {
 				if (action.payload && action.payload.data) {
