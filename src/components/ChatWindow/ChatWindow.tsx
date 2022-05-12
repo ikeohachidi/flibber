@@ -31,17 +31,19 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 }
 
 const ChatWindow = (): JSX.Element => {
+	const dispatch = useDispatch();
+	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
+
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
-	const dispatch = useDispatch();
 	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
-	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
 	const isFetchingConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingConversation);
+	const loadedConversations = useSelector<AppState, number[]>(state => state.chat.loadedConversations);
 
 	useEffect(() => {
 		if (activeChatUser.id === 0) return;
 
-		if (conversations.length === 0) {
+		if (!loadedConversations.includes(activeChatUser.id)) {
 			dispatch(getConversationService({
 				chatId: chatId(authUser.id, activeChatUser.id),
 				authUser: authUser.id
