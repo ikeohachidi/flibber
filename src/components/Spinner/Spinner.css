@@ -1,0 +1,36 @@
+.loader-spinner-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    background-color: rgba(0, 0, 0, 0.555);
+    z-index: 2;
+}
+
+.loader-spinner {
+    height: 40px;
+    width: 40px;
+    border-radius: 999px;
+    border: 3px solid rgb(61, 61, 61);
+    border-top: 3px solid white;
+    animation-name: rotate;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotateZ(0deg);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
