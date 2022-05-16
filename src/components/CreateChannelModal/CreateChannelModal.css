@@ -1,0 +1,17 @@
+.create-channel-wrapper {
+	@apply fixed top-0 bottom-0 right-0 left-0 z-20;
+	@apply bg-black/75;
+	@apply flex items-center justify-center;
+}
+
+.create-channel-form {
+	@apply px-10 py-8 rounded-md w-2/6 bg-black;
+}
+
+label.block {
+	@apply font-bold;
+}
+
+p label {
+	@apply inline-block mr-5 ml-2;
+}

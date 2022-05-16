@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
 import './Channels.css'
 
 interface Channel {
@@ -7,6 +9,8 @@ interface Channel {
 }
 
 const Channels = (): JSX.Element => {
+	const [ showCreateChannelModal, setShowCreateChannelModal ] = useState(false);
+	
 	const channels: Channel[] = [
 		{ icon: '😁', text: 'Design', unread: 3 },
 		{ icon: '🇳🇬', text: 'Customer Supports', unread: 5 },
@@ -26,16 +30,29 @@ const Channels = (): JSX.Element => {
 
 	return (
 		<div>
-			<p className="flex items-center text-gray-500 px-4 mb-3">
-				<i className="ri-arrow-down-s-line"></i>
-				<span className="inline-block ml-3 text-xs">CHANNELS</span>
+			{
+				showCreateChannelModal &&
+				<CreateChannelModal 
+					onClose={ setShowCreateChannelModal }
+				/>
+			}
+
+			<p className="flex text-gray-500 px-4 mb-3">
+				<span className="flex items-center">
+					<i className="ri-arrow-down-s-line"></i>
+					<span className="inline-block ml-3 text-xs">
+						CHANNELS
+					</span>
+				</span>
+				<span 
+					className="ml-auto cursor-pointer" 
+					onClick={ () => setShowCreateChannelModal(true) }
+				>
+					<i className="ri-add-line"></i>
+				</span>
 			</p>
 			<ul>
 				{ channelsList }
-				<li className="list-item text-gray-500 text-xs">
-					<i className="ri-add-line"></i>
-					<span className="ml-2 uppercase">create channel</span>
-				</li>
 			</ul>
 		</div>
 	)
