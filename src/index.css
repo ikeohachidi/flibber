@@ -18,6 +18,10 @@ button {
 	@apply py-2 px-7 rounded-md bg-indigo-700 text-white;
 }
 
+button.no-outline {
+	@apply border-0 text-gray-50 bg-transparent;
+}
+
 input:not(.custom) {
 	@apply bg-gray-50 p-3 rounded-md border border-gray-200;
 }
