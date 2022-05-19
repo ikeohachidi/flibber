@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
 import './Channels.css'
 import User from 'types/User';
+import { useDispatch } from 'react-redux';
+import { getUserChannelsService } from 'services/channel';
 
 interface Channel {
 	icon: string;
@@ -14,7 +16,14 @@ type Props = {
 }
 
 const Channels = (props: Props): JSX.Element => {
+	const dispatch = useDispatch();
 	const [ showCreateChannelModal, setShowCreateChannelModal ] = useState(false);
+
+	useEffect(() => {
+		if (props.authUser) {
+			dispatch(getUserChannelsService(props.authUser.id))
+		}
+	}, [ props.authUser ])
 	
 	const channels: Channel[] = [
 		{ icon: '😁', text: 'Design', unread: 3 },
