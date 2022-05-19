@@ -15,3 +15,7 @@ export type ChannelMember = {
 	user_id: number;
 	is_admin: boolean;
 }
+
+export type MemberChannelQueryResult = ChannelMember & { 
+	channel: Channel
+}

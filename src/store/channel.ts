@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createChannelService } from "services/channel";
+import { createChannelService, getUserChannelsService } from "services/channel";
 import { Channel, ChannelMember } from "types/Channel";
 
 type ChannelState = {
@@ -7,12 +7,14 @@ type ChannelState = {
 		metadata: Channel,
 		members: ChannelMember[] 
 	}[],
-	isCreatingChannel: boolean
+	isCreatingChannel: boolean,
+	isLoadingChannels: boolean
 }
 
 const initialState: ChannelState = {
 	channels: [],
-	isCreatingChannel: false
+	isCreatingChannel: false,
+	isLoadingChannels: false
 }
 
 const channel = createSlice({
@@ -33,6 +35,23 @@ const channel = createSlice({
 					})
 				})
 				state.isCreatingChannel = false;
+			})
+			.addCase(getUserChannelsService.pending, (state) => {
+				state.isLoadingChannels = true;
+			})
+			.addCase(getUserChannelsService.fulfilled, (state, { payload }) => {
+				payload?.data.forEach(value => {
+					const member = {
+						is_admin: value.is_admin, 
+						user_id: value.user_id
+					}
+
+					state.channels.push({
+						members: [ member ],
+						metadata: value.channel
+					})
+				})
+				state.isLoadingChannels = false;
 			})
 	}
 })
