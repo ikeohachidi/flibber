@@ -8,6 +8,8 @@ import User from 'types/User';
 import { useNavigate } from 'react-router';
 
 import RoutePath from 'routes';
+import { useSelector } from 'react-redux';
+import { AppState } from 'store';
 
 const actionItems = [
 	{ icon: 'ri-time-line', text: 'All Updates' },
@@ -34,6 +36,7 @@ type Props = {
 
 const SideNav = (props: Props): JSX.Element => {
 	const navigation = useNavigate();
+	const authUser = useSelector<AppState, User>(state => state.user.user as User)
 
 	const signOutUser = () => {
 		signOut()
@@ -57,7 +60,9 @@ const SideNav = (props: Props): JSX.Element => {
 				<ActionItems />
 			</div>
 			<div className="mb-4">
-				<Channels />	
+				<Channels 
+					authUser={ authUser }
+				/>	
 			</div>
 			<div>
 				<Contacts />	

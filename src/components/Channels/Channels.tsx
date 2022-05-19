@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
 import './Channels.css'
+import User from 'types/User';
 
 interface Channel {
 	icon: string;
@@ -8,7 +9,11 @@ interface Channel {
 	unread?: number;
 }
 
-const Channels = (): JSX.Element => {
+type Props = {
+	authUser: User
+}
+
+const Channels = (props: Props): JSX.Element => {
 	const [ showCreateChannelModal, setShowCreateChannelModal ] = useState(false);
 	
 	const channels: Channel[] = [
@@ -33,6 +38,7 @@ const Channels = (): JSX.Element => {
 			{
 				showCreateChannelModal &&
 				<CreateChannelModal 
+					authUser={ props.authUser }
 					onClose={ setShowCreateChannelModal }
 				/>
 			}

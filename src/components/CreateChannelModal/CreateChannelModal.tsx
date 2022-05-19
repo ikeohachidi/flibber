@@ -1,17 +1,31 @@
-import React, { useRef, ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import './CreateChannelModal.css';
 import { Scope } from 'types/Channel';
+import { createChannelService } from 'services/channel';
+import User from 'types/User';
 
 type Props = {
 	onClose: (state: boolean) => void;
+	authUser: User;
 }
 
-const CreateChannel = ({ onClose }: Props) => {
-	const [name, setName] = useState<string>('')
+const CreateChannel = ({ onClose, authUser }: Props) => {
+	const dispatch = useDispatch();
+	const [name, setName] = useState<string>('');
 	const [scope, setScope] = useState<Scope>(Scope.PRIVATE);
 
 	const createChannel = () => {
-		console.log({scope, name})
+		dispatch(createChannelService({
+			channel: {
+				name,
+				scope
+			},
+			member: {
+				is_admin: true,
+				user_id: authUser.id
+			}
+		}))
 	}
 
 	return (
