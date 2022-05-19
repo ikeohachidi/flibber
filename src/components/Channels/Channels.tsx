@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
+import { useDispatch, useSelector } from 'react-redux';
 import './Channels.css'
-import User from 'types/User';
-import { useDispatch } from 'react-redux';
-import { getUserChannelsService } from 'services/channel';
 
-interface Channel {
-	icon: string;
-	text: string;
-	unread?: number;
-}
+import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
+
+import User from 'types/User';
+import { Channel } from 'types/Channel';
+import { getUserChannelsService } from 'services/channel';
+import { AppState } from 'store';
 
 type Props = {
 	authUser: User
@@ -18,27 +16,23 @@ type Props = {
 const Channels = (props: Props): JSX.Element => {
 	const dispatch = useDispatch();
 	const [ showCreateChannelModal, setShowCreateChannelModal ] = useState(false);
+	const channels = useSelector<AppState, Channel[]>(state => {
+		return state.channel.channels.map(channel => channel.metadata);
+	});
 
 	useEffect(() => {
 		if (props.authUser) {
 			dispatch(getUserChannelsService(props.authUser.id))
 		}
 	}, [ props.authUser ])
-	
-	const channels: Channel[] = [
-		{ icon: '😁', text: 'Design', unread: 3 },
-		{ icon: '🇳🇬', text: 'Customer Supports', unread: 5 },
-		{ icon: '🎯', text: 'Sales & Marketing', unread: 18 },
-		{ icon: '🌎', text: 'Tech Support', unread: 18 }
-	];
 
 	const activeItem = 'Design';
 
 	const channelsList = channels.map((channel, index) => (
-		<li className={`list-item ${ activeItem === channel.text && 'active' }`} key={ index }>
-			<span className="mr-3">{ channel.icon }</span>
-			<span>{ channel.text }</span>
-			<span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">{ channel.unread }</span>
+		<li className={`list-item`} key={ index }>
+			{/* <span className="mr-3">{ channel.icon }</span> */}
+			<span>{ channel.name }</span>
+			{/* <span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">{ channel.unread }</span> */}
 		</li>
 	))
 
