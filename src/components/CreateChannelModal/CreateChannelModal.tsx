@@ -26,6 +26,7 @@ const CreateChannel = ({ onClose, authUser }: Props) => {
 				user_id: authUser.id
 			}
 		}))
+		onClose(false)
 	}
 
 	return (
