@@ -13,7 +13,8 @@ type ChatState = {
 		[userId: string]: RecentChat
 	}
 	messageInTransit: boolean,
-	isFetchingConversation: boolean
+	isFetchingConversation: boolean,
+	isFetchingRecentConversation: boolean
 }
 
 const initialState: ChatState = {
@@ -22,7 +23,8 @@ const initialState: ChatState = {
 	conversation: {},
 	recentConversations: {},
 	messageInTransit: false,
-	isFetchingConversation: false
+	isFetchingConversation: false,
+	isFetchingRecentConversation: false
 }
 
 const reducers = {
@@ -121,6 +123,12 @@ const chat = createSlice({
 			.addCase(getConversationService.pending, (state: ChatState) => {
 				state.isFetchingConversation = true;
 			})
+			.addCase(getRecentConversations.pending, (state: ChatState, action) => {
+				state.isFetchingRecentConversation = true;
+			})
+			.addCase(getRecentConversations.rejected, (state: ChatState, action) => {
+				state.isFetchingRecentConversation = false;
+			})
 			.addCase(getRecentConversations.fulfilled, (state: ChatState, action) => {
 				if (action.payload && action.payload.data) {
 					const { authUser } = action.payload;
@@ -133,6 +141,8 @@ const chat = createSlice({
 						}
 					})
 				}
+
+				state.isFetchingRecentConversation = false;
 			})
 	}
 })

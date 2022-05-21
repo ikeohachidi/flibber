@@ -4,6 +4,7 @@ import './RecentChat.css';
 
 import Avatar from 'components/Avatar/Avatar';
 import MessageSearch from 'components/MessageSearch/MessageSearch';
+import Spinner from 'components/Spinner/Spinner';
 
 import { timeFromNow } from 'utils/date';
 import { getRecentConversations } from 'services/chat';
@@ -125,6 +126,7 @@ const Recent = (): JSX.Element => {
 	const authUserId = useSelector<AppState, number | undefined>(state => state.user.user?.id);
 	const contacts = useSelector((state: AppState) => state.contacts.acceptedContacts);
 	const recentConversations = useSelector<AppState, RecentChat[]>(state => Object.values(state.chat.recentConversations));
+	const isFetchingRecentConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingRecentConversation);
 
 	const [ searchResults, setSearchResult ] = useState<Chat[]>([]);
 	const [ searchText, setSearchText ] = useState('');
@@ -171,6 +173,12 @@ const Recent = (): JSX.Element => {
 
 	return (
 		<div className="message-container">
+			{
+				isFetchingRecentConversation &&
+				<Spinner 
+					fullSize={ true }
+				/>
+			}
 			<div className="search-wrapper">
 				<MessageSearch 
 					onSearchResultReturned={ setSearchResult }

@@ -1,6 +1,6 @@
 .message-container {
 	background-color: var(--color-dark-1);
-	@apply h-full;
+	@apply h-full relative;
 }
 
 .search-wrapper {
