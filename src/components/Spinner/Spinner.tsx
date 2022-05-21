@@ -6,22 +6,28 @@ type Props = {
 	size?: string;
 }
 
+const CircleLoader = ({ size }: { size: string }) => {
+	return (
+		<div 
+			className="loader-spinner"
+			style={{
+				height: size,
+				width: size
+			}}
+		></div>
+	)
+}
+
 const Spinner = (props: Props) => {
 	if (props.fullSize) {
 		return (
 			<div className="loader-spinner-wrapper">
-				<div 
-					className="loader-spinner"
-					style={{
-						height: props.size,
-						width: props.size
-					}}
-				></div>
+				<CircleLoader size={props.size as string}/>
 			</div>	
 		)
 	}
 	return (
-		<div className="loader-spinner"></div>
+		<CircleLoader size={props.size as string}/>
 	)
 }
 
