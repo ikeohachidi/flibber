@@ -48,7 +48,7 @@ const Channels = (props: Props): JSX.Element => {
 				/>
 			}
 
-			<p className="flex text-gray-500 px-4 mb-3">
+			<div className="flex text-gray-500 px-4 mb-3">
 				<span className="flex items-center">
 					{
 						isLoadingChannels
@@ -65,7 +65,7 @@ const Channels = (props: Props): JSX.Element => {
 				>
 					<i className="ri-add-line"></i>
 				</span>
-			</p>
+			</div>
 			<ul>
 				{ channelsList }
 			</ul>
