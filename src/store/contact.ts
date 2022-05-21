@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 import User from "types/User";
 
-
+// TODO: currently being used to manage loading state of pending contacts requests
+// remove this and make that more explicit like isLoadingPendingContacts
 enum Status {
 	PENDING = 'pending',
 	FULFILLED = 'fulfilled'
@@ -12,12 +13,14 @@ type ContactsState = {
 	acceptedContacts: User[];
 	pendingContacts: User[];
 	status: Status;
+	isLoadingContacts: boolean;
 }
 
 const initialState = {
 	acceptedContacts: [],
 	pendingContacts: [],
-	status: Status.FULFILLED 
+	status: Status.FULFILLED,
+	isLoadingContacts: false
 }
 
 type ContactType = 'acceptedContacts' | 'pendingContacts';
@@ -57,10 +60,17 @@ const contact = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			.addCase(fetchAcceptedContactsService.pending, (state: ContactsState, action) => {
+				state.isLoadingContacts = true;
+			})
+			.addCase(fetchAcceptedContactsService.rejected, (state: ContactsState, action) => {
+				state.isLoadingContacts = false; 
+			})
 			.addCase(fetchAcceptedContactsService.fulfilled, (state: ContactsState, action) => {
 				if (action.payload) {
 					addContact(state, 'acceptedContacts', action.payload);
 				}
+				state.isLoadingContacts = false;
 			})
 			.addCase(fetchPendingRequestService.pending, (state) => {
 				state.status = Status.PENDING;

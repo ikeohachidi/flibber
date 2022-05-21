@@ -5,6 +5,7 @@ import './Contacts.css';
 
 import Avatar from 'components/Avatar/Avatar';
 import Modal from 'components/Modal/Modal';
+import Spinner from 'components/Spinner/Spinner';
 import AddContact from './AddContact/AddContact';
 
 import store, { AppState } from 'store';
@@ -77,6 +78,7 @@ type AcceptedContactsProps = {
 const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 	const dispatch = useDispatch();
 	const acceptedContacts = useSelector<AppState, User[]>(state => state.contacts.acceptedContacts);
+	const isLoadingContacts = useSelector<AppState, boolean>(state => state.contacts.isLoadingContacts);
 
 	useEffect(() => {
 		if (props.userId) store.dispatch(fetchAcceptedContactsService(props.userId))
@@ -89,7 +91,11 @@ const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 	return (
 		<ul>
 			<li className="flex items-center text-gray-500 px-4 mb-1">
-				<i className="ri-user-line"></i>
+				{
+					isLoadingContacts
+					? <Spinner size={"15px"}/>
+					: <i className="ri-user-line"></i>
+				}
 				<span className="inline-block ml-3 text-xs uppercase">Contacts</span>
 			</li>
 			{
