@@ -39,6 +39,9 @@ const channel = createSlice({
 			.addCase(getUserChannelsService.pending, (state) => {
 				state.isLoadingChannels = true;
 			})
+			.addCase(getUserChannelsService.rejected, (state) => {
+				state.isLoadingChannels = false;
+			})
 			.addCase(getUserChannelsService.fulfilled, (state, { payload }) => {
 				payload?.data.forEach(value => {
 					const member = {
