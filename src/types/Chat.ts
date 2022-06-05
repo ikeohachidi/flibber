@@ -6,7 +6,7 @@ export enum ChatType {
 	VIDEO = 'video'
 }
 
-interface Message {
+export interface Message {
 	type: ChatType;
 	value: string;
 }

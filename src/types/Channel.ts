@@ -1,3 +1,5 @@
+import { Message } from './Chat';
+
 export enum Scope {
 	PRIVATE = 'private',
 	PUBLIC = 'public'
@@ -18,4 +20,12 @@ export type ChannelMember = {
 
 export type MemberChannelQueryResult = ChannelMember & { 
 	channel: Channel
+}
+
+export type ChannelChat = {
+	id?: number;
+	created_at: string;
+	sender_id: number;
+	channel_id: number;
+	message: Message;
 }
