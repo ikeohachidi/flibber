@@ -14,6 +14,8 @@ import { chatId } from 'utils/chat';
 
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
+import { Channel } from 'types/Channel';
+import { getChannelMessagesService } from 'services/channel';
 
 /**
  * checks if a single user has sent consecutive messages without another
@@ -34,14 +36,19 @@ const ChatWindow = (): JSX.Element => {
 	const dispatch = useDispatch();
 	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
 
-	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
+	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
+	const activeChannel = useSelector<AppState, Channel | null>(state => state.channel.activeChannel);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
-	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
+	const conversations = useSelector<AppState, Chat[]>(state => {
+		if (activeChatUser) return state.chat.conversation[activeChatUser.id];
+
+		return [];
+	});
 	const isFetchingConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingConversation);
 	const loadedConversations = useSelector<AppState, number[]>(state => state.chat.loadedConversations);
 
 	useEffect(() => {
-		if (activeChatUser.id === 0) return;
+		if (!activeChatUser || activeChatUser.id === 0) return;
 
 		if (!loadedConversations.includes(activeChatUser.id)) {
 			dispatch(getConversationService({
@@ -50,13 +57,25 @@ const ChatWindow = (): JSX.Element => {
 			}))
 		}
 
-	}, [ activeChatUser.id ])
+	}, [ activeChatUser ])
 
+	useEffect(() => {
+		if (!activeChannel || activeChannel.id === 0) return;
+		
+		dispatch(getChannelMessagesService(activeChannel.id as number)) 
+	}, [ activeChannel ])
 	const chatDetailsEl = useRef<HTMLDivElement>(null);
 
 	const onCloseClick = () => {
 		chatDetailsEl.current?.classList.toggle('hide');
 	}
+
+	const title = () => {
+		if (activeChatUser) return activeChatUser.name;
+		
+		if (activeChannel) return activeChannel.name;
+
+		return 'No active chat participant'; }
 
 	return (
 		<section className="chat-container">
@@ -72,11 +91,7 @@ const ChatWindow = (): JSX.Element => {
 			</div>
 			<div className="chat-banner">
 				<span>
-					{
-						activeChatUser
-						? activeChatUser.name
-						: 'No active chat participant' 
-					}
+					{ title() }
 				</span>
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
@@ -106,6 +121,7 @@ const ChatWindow = (): JSX.Element => {
 			<div className="message-input">
 				<MessageInput 
 					activeChatUser={ activeChatUser }
+					activeChannel={ activeChannel }
 					authUser={ authUser }
 					
 				/>

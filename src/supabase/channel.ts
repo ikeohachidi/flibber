@@ -1,5 +1,5 @@
+import { Channel, ChannelChat, ChannelMember, MemberChannelQueryResult } from 'types/Channel';
 import supabase from './supabase';
-import { Channel, ChannelMember, MemberChannelQueryResult } from 'types/Channel';
  
 export const createChannel = (channel: Channel, member: ChannelMember) => {
 	return supabase
@@ -18,4 +18,18 @@ export const getUserChannels = (userId: number) => {
 			is_admin
 		`)
 		.eq('user_id', userId)
+}
+
+export const sendChannelMessage = async(chat: ChannelChat) => {
+	return supabase
+		.from('channel_chat')
+		.insert(chat)
+}
+
+
+export const getChannelMessages = async(channelId: number) => {
+	return supabase	
+		.from<ChannelChat>('channel_chat')
+		.select('*')
+		.eq('channel_id', channelId)
 }

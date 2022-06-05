@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User, { UserDefault } from "types/User";
+import User  from "types/User";
 import Chat, { RecentChat } from "types/Chat";
 import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
 
 type ChatState = {
-	activeUserChat: User;
+	activeUserChat: User | null;
 	conversation: {
 		[userId: string]: Chat[]
 	};
@@ -18,7 +18,7 @@ type ChatState = {
 }
 
 const initialState: ChatState = {
-	activeUserChat: UserDefault,
+	activeUserChat: null,
 	loadedConversations: [],
 	conversation: {},
 	recentConversations: {},
@@ -28,7 +28,7 @@ const initialState: ChatState = {
 }
 
 const reducers = {
-	setActiveUserChat(state: ChatState, action: PayloadAction<User>) {
+	setActiveUserChat(state: ChatState, action: PayloadAction<User | null>) {
 		state.activeUserChat = action.payload;
 	},
 	setConversation(state: ChatState, action: PayloadAction<{ userId: string, conversation: Chat[] }>) {
