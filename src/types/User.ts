@@ -4,9 +4,9 @@ type User = {
 	name: string;
 	image?: string;
 	onlineState?: 'online' | 'away' | 'offline';
-}
+};
 
-export const UserDefault: User = {
+export const userDefault: User = {
 	id: 0,
 	email: '',
 	name: '',

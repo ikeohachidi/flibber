@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User, { UserDefault } from "types/User";
+import User, { userDefault } from "types/User";
 import Chat, { RecentChat } from "types/Chat";
 import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
 
@@ -18,7 +18,7 @@ type ChatState = {
 }
 
 const initialState: ChatState = {
-	activeUserChat: UserDefault,
+	activeUserChat: userDefault,
 	loadedConversations: [],
 	conversation: {},
 	recentConversations: {},

@@ -5,9 +5,11 @@ import './Channels.css'
 import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
 import Spinner from 'components/Spinner/Spinner';
 
-import User from 'types/User';
+import User, { userDefault } from 'types/User';
 import { Channel } from 'types/Channel';
 import { getUserChannelsService } from 'services/channel';
+import { setActiveUserChat } from 'store/chat';
+import { setActiveChannel } from 'store/channel';
 import { AppState } from 'store';
 
 type Props = {
@@ -30,8 +32,17 @@ const Channels = (props: Props): JSX.Element => {
 
 	const activeItem = 'Design';
 
+	const selectChannel = (channel: Channel) : void => {
+		dispatch(setActiveUserChat(userDefault));
+		dispatch(setActiveChannel(channel));
+	}
+
 	const channelsList = channels.map((channel, index) => (
-		<li className={`list-item`} key={ index }>
+		<li 
+			className={`list-item cursor-pointer`} 
+			key={ index } 
+			onClick={ () => selectChannel(channel) }
+		>
 			{/* <span className="mr-3">{ channel.icon }</span> */}
 			<span>{ channel.name }</span>
 			{/* <span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">{ channel.unread }</span> */}

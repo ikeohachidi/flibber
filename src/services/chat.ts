@@ -11,6 +11,10 @@ export const sendMessageService = createAsyncThunk('chat/sendMessage', async (re
 		message: recent.message
 	}
 
+	if ('scope' in recent.to) {
+		chat.conversation_id = recent.to.id;
+	}
+
 	const { error } = await sendMessage(chat);
 	if (error) return;
 

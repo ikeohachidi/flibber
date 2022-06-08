@@ -1,18 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createChannelService, getUserChannelsService } from "services/channel";
-import { Channel, ChannelMember } from "types/Channel";
+import { Channel, channelDefault, ChannelMember } from "types/Channel";
 
 type ChannelState = {
 	channels: {
 		metadata: Channel,
 		members: ChannelMember[] 
 	}[],
+	activeChannel: Channel;
 	isCreatingChannel: boolean,
 	isLoadingChannels: boolean
 }
 
 const initialState: ChannelState = {
 	channels: [],
+	activeChannel: channelDefault,
 	isCreatingChannel: false,
 	isLoadingChannels: false
 }
@@ -21,6 +23,9 @@ const channel = createSlice({
 	name: 'channel',
 	initialState,
 	reducers: {
+		setActiveChannel(state: ChannelState, { payload }: PayloadAction<Channel>): void {
+			state.activeChannel = payload;
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -59,5 +64,6 @@ const channel = createSlice({
 	}
 })
 
+export const { setActiveChannel } = channel.actions;
 export { ChannelState }
 export default channel.reducer;

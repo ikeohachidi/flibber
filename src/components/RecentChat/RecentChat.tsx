@@ -18,20 +18,24 @@ import { setActiveUserChat } from 'store/chat';
 type ContactsMessageProps = {
 	authUserId: number;
 	recentConversations: RecentChat[];
-	onUserClick: (user: User) => void;
+	onUserClick: (participant: User) => void;
 }
 
 const ContactsMessage = ({ authUserId, recentConversations, onUserClick }: ContactsMessageProps): JSX.Element => {
-	const getChatParticipant = (chat: RecentChat, userId: number) => {
-		if (chat.from.id === userId) return chat.to;
-		return chat.from;
+	const getChatParticipant = (chat: RecentChat, userId: number): User => {
+		if (chat.from.id === userId) return chat.to as User;
+		return chat.from as User;
 	}
 
 	return (
 		<ul>
 			{
 				recentConversations.map((message, index) => (
-					<div className="message-item" key={ index } onClick={ () => onUserClick(getChatParticipant(message, authUserId!)) }>
+					<div 
+						className="message-item" 
+						key={ index } 
+						onClick={ () => onUserClick(getChatParticipant(message, authUserId!)) }
+					>
 						<div className="mr-2 mt-1">
 							<Avatar/>
 						</div>

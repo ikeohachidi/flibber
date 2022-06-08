@@ -6,9 +6,15 @@ export enum Scope {
 }
 
 export type Channel = {
-	id?: number;
+	id: number;
 	name: string;
 	scope: Scope;
+}
+
+export const channelDefault = {
+	id: 0,
+	name: '',
+	scope: Scope.PRIVATE
 }
 
 export type ChannelMember = {

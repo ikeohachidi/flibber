@@ -6,15 +6,16 @@ import './MessageInput.css';
 import { sendMessageService } from 'services/chat';
 
 import User from 'types/User';
-import { ChatType, RecentChat } from 'types/Chat';
+import { Channel } from 'types/Channel';
+import { ChatType, ChatSource, RecentChat } from 'types/Chat';
 import { timeNow } from 'utils/date';
 
 type Props = {
-	activeChatUser: User;
+	participant: ChatSource;
 	authUser: User;
 }
 
-const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
+const MessageInput = ({ participant, authUser }: Props): JSX.Element => {
 	const dispatch = useDispatch();
 
 	const sendMessage = (e: KeyboardEvent) => {
@@ -22,9 +23,9 @@ const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
 
 		if (target.value === '') return;
 
-		if (e.key === 'Enter' && activeChatUser) {
+		if (e.key === 'Enter' && participant) {
 			const chat: RecentChat = {
-				to: activeChatUser,
+				to: participant,
 				from: authUser,
 				created_at: timeNow(),
 				message: {
@@ -39,13 +40,13 @@ const MessageInput = ({ activeChatUser, authUser }: Props): JSX.Element => {
 	}
 
 	return (
-		<div className={ `message-input-container ${ activeChatUser.id < 1 && 'disabled' }` }>
+		<div className={ `message-input-container ${ participant.id < 1 && 'disabled' }` }>
 			<i className="ri-mic-2-line"></i>
 			<input 
-				disabled={ activeChatUser.id < 1 }
+				disabled={ participant && (participant.id < 1) }
 				className="custom" 
 				type="text" 
-				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
+				placeholder={ participant ? `Message ${participant.name}` : 'Send Message' } 
 				onKeyDown={ sendMessage }
 			/>
 			<i className="ri-add-line mx-4"></i>

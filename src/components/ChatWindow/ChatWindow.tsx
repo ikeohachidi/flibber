@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import MessageInput from './MessageInput/MessageInput';
@@ -14,6 +14,9 @@ import { chatId } from 'utils/chat';
 
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
+import { Channel } from 'types/Channel';
+
+type ParticipantKind = 'none' | 'user' | 'channel'
 
 /**
  * checks if a single user has sent consecutive messages without another
@@ -30,33 +33,71 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[]) => {
 	return presentChat.from === prevChat.from;
 }
 
+const ChatName = (kind: ParticipantKind, channel: Channel, user: User): JSX.Element => {
+	switch (kind) {
+		case 'user':
+			return <span>{ user.name }</span> 
+			break; 
+		case 'channel':
+			return <span>{ channel.name }</span>
+		default:
+			return <span>No active chat participant</span>;
+	}
+} 
+
 const ChatWindow = (): JSX.Element => {
 	const dispatch = useDispatch();
-	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
+
+	const chatDetailsEl = useRef<HTMLDivElement>(null);
+	const participantKind = (): 'user' | 'channel' | 'none' => {
+		if (activeChatUser.id > 0) return 'user';
+		if (activeChannel.id > 0) return 'channel';
+
+		return 'none';
+	}
 
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat);
+	const activeChannel = useSelector<AppState, Channel>(state => state.channel.activeChannel);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
-	const conversations = useSelector<AppState, Chat[]>(state => state.chat.conversation[activeChatUser.id] || []);
+	const conversations = useSelector<AppState, Chat[]>(state => {
+		let participantId = activeChatUser.id;
+		if (participantKind() === 'channel') participantId = activeChannel.id;
+
+		return state.chat.conversation[participantId] || []
+	});
 	const isFetchingConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingConversation);
 	const loadedConversations = useSelector<AppState, number[]>(state => state.chat.loadedConversations);
 
-	useEffect(() => {
-		if (activeChatUser.id === 0) return;
-
-		if (!loadedConversations.includes(activeChatUser.id)) {
-			dispatch(getConversationService({
-				chatId: chatId(authUser.id, activeChatUser.id),
-				authUser: authUser.id
-			}))
-		}
-
-	}, [ activeChatUser.id ])
-
-	const chatDetailsEl = useRef<HTMLDivElement>(null);
+	const isSignedInUserSender = (senderId: number) => senderId === authUser.id;
 
 	const onCloseClick = () => {
 		chatDetailsEl.current?.classList.toggle('hide');
 	}
+
+	useEffect(() => {
+		switch (participantKind()) {
+			case 'user':
+				if (!loadedConversations.includes(activeChatUser.id)) {
+					dispatch(getConversationService({
+						chatId: chatId(authUser.id, activeChatUser.id),
+						authUser: authUser.id
+					}))
+				}
+				break;	
+			case 'channel':
+				if (!loadedConversations.includes(activeChannel.id)) {
+					dispatch(getConversationService({
+						chatId: activeChannel.id,
+						authUser: authUser.id
+					}))
+				}
+				break;
+			case 'none':
+			default:
+				return;
+		}
+
+	}, [ activeChatUser.id, activeChannel.id ])
 
 	return (
 		<section className="chat-container">
@@ -72,11 +113,7 @@ const ChatWindow = (): JSX.Element => {
 			</div>
 			<div className="chat-banner">
 				<span>
-					{
-						activeChatUser
-						? activeChatUser.name
-						: 'No active chat participant' 
-					}
+					{ ChatName(participantKind(), activeChannel, activeChatUser)}
 				</span>
 				<i className="ri-more-fill" onClick={ onCloseClick }></i>
 			</div>
@@ -105,7 +142,11 @@ const ChatWindow = (): JSX.Element => {
 			</div>
 			<div className="message-input">
 				<MessageInput 
-					activeChatUser={ activeChatUser }
+					participant={ 
+						participantKind() === 'user'
+						? activeChatUser
+						: activeChannel
+					}
 					authUser={ authUser }
 					
 				/>

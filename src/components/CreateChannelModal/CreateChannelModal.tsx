@@ -18,6 +18,7 @@ const CreateChannel = ({ onClose, authUser }: Props) => {
 	const createChannel = () => {
 		dispatch(createChannelService({
 			channel: {
+				id: 0,
 				name,
 				scope
 			},

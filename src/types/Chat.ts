@@ -1,3 +1,4 @@
+import { Channel } from "./Channel";
 import User from "./User";
 
 export enum ChatType {
@@ -20,7 +21,9 @@ export default interface Chat {
 
 export interface RecentChat {
 	from: User;
-	to: User;
+	to: ChatSource;
 	created_at: string;
 	message: Message;
 }
+
+export type ChatSource = User | Channel;
