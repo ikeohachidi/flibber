@@ -40,7 +40,9 @@ const ChatWindow = (): JSX.Element => {
 	const activeChannel = useSelector<AppState, Channel | null>(state => state.channel.activeChannel);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
 	const conversations = useSelector<AppState, Chat[]>(state => {
-		if (activeChatUser) return state.chat.conversation[activeChatUser.id];
+		if (activeChatUser && (activeChatUser.id in state.chat.conversation)) {
+			return state.chat.conversation[activeChatUser.id];
+		}
 
 		return [];
 	});
