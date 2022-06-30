@@ -10,3 +10,14 @@ If you're reading this sorry for the lack of a documentation, I'll get to that a
 **npm buid** Build app for production [documenation](https://facebook.github.io/create-react-app/docs/deployment)
 
 **npm eject** Once you go eject you can't go back
+
+
+# Project setup
+- Create a project on supabase
+- Create a `.env` file at the root of the project add the following inside
+	```
+	REACT_APP_SUPABASE_URL=""
+	REACT_APP_SUPABASE_KEY=""
+	```
+	The value of `REACT_APP_SUPABASE_URL` should be the url of the supabase project and `REACT_APP_SUPABASE_KEY` is the project API key. Both of these strings can be found at https://app.supabase.com/project/<project_id_i_think>/settings/api
+		
