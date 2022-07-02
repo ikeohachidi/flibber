@@ -11,13 +11,7 @@ export const createChannel = (channel: Channel, member: ChannelMember) => {
 
 export const getUserChannels = (userId: number) => {
 	return supabase
-		.from<MemberChannelQueryResult>('channel_member')
-		.select(`
-			channel:channel_id (*),
-			user_id,
-			is_admin
-		`)
-		.eq('user_id', userId)
+		.rpc('get_connected_channels', { userid: userId })
 }
 
 export const sendChannelMessage = async(chat: ChannelChat) => {

@@ -72,18 +72,20 @@ const channel = createSlice({
 				state.isLoadingChannels = false;
 			})
 			.addCase(getUserChannelsService.fulfilled, (state, { payload }) => {
-				payload?.data.forEach(value => {
-					const member = {
-						is_admin: value.is_admin, 
-						user_id: value.user_id
+				if (payload && payload.data) {
+					for (const value of payload?.data!) {
+						state.channels.push({
+							metadata: {
+								id: value.id,
+								name: value.name,
+								scope: value.scope
+							},
+							members: value.users
+						})
 					}
-
-					state.channels.push({
-						members: [ member ],
-						metadata: value.channel
-					})
-				})
+				}
 				state.isLoadingChannels = false;
+
 			})
 	}
 })
