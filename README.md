@@ -24,3 +24,7 @@ If you're reading this sorry for the lack of a documentation, I'll get to that a
 - Create SQL tables
 	Check the `sql_tables.md` file for all SQL statements to create the needed tables.
 	**Note** These statements haven't been tested properly and so may break
+
+- Create SQL functions 
+	Check the `sql_functions.md` file for all SQL statements to create the needed functions.
+	**Note** These statements haven't been tested properly and so may break
