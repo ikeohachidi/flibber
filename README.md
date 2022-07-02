@@ -21,3 +21,6 @@ If you're reading this sorry for the lack of a documentation, I'll get to that a
 	```
 	The value of `REACT_APP_SUPABASE_URL` should be the url of the supabase project and `REACT_APP_SUPABASE_KEY` is the project API key. Both of these strings can be found at https://app.supabase.com/project/<project_id_i_think>/settings/api
 		
+- Create SQL tables
+	Check the `sql_tables.md` file for all SQL statements to create the needed tables.
+	**Note** These statements haven't been tested properly and so may break
