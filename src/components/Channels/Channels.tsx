@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import './Channels.css'
+import './Channels.css';
 
 import CreateChannelModal from 'components/CreateChannelModal/CreateChannelModal';
 import Spinner from 'components/Spinner/Spinner';
 
-import User, { userDefault } from 'types/User';
-import { Channel } from 'types/Channel';
 import { getUserChannelsService } from 'services/channel';
 import { setActiveUserChat } from 'store/chat';
 import { setActiveChannel } from 'store/channel';
 import { AppState } from 'store';
+import { Channel } from 'types/Channel';
+import User from 'types/User';
 
 type Props = {
 	authUser: User
@@ -18,34 +18,31 @@ type Props = {
 
 const Channels = (props: Props): JSX.Element => {
 	const dispatch = useDispatch();
+
 	const [ showCreateChannelModal, setShowCreateChannelModal ] = useState(false);
+
 	const channels = useSelector<AppState, Channel[]>(state => {
 		return state.channel.channels.map(channel => channel.metadata);
 	});
 	const isLoadingChannels = useSelector<AppState, boolean>(state => state.channel.isLoadingChannels);
 
 	useEffect(() => {
-		if (props.authUser) {
+		if (props.authUser && props.authUser.id) {
 			dispatch(getUserChannelsService(props.authUser.id))
 		}
 	}, [ props.authUser ])
 
-	const activeItem = 'Design';
-
-	const selectChannel = (channel: Channel) : void => {
-		dispatch(setActiveUserChat(userDefault));
+	const setActiveChannel = (channel: Channel): void => {
+		dispatch(setActiveUserChat(null));
 		dispatch(setActiveChannel(channel));
 	}
 
 	const channelsList = channels.map((channel, index) => (
-		<li 
-			className={`list-item cursor-pointer`} 
-			key={ index } 
-			onClick={ () => selectChannel(channel) }
-		>
-			{/* <span className="mr-3">{ channel.icon }</span> */}
-			<span>{ channel.name }</span>
-			{/* <span className="rounded-xl ml-auto text-xs bg-gray-800 py-1 px-2">{ channel.unread }</span> */}
+		<li className={`list-item`} key={ index }>
+			<span 
+				className="cursor-pointer" 
+				onClick={ () => setActiveChannel(channel) }
+			>{ channel.name }</span>
 		</li>
 	))
 

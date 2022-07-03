@@ -1,34 +1,82 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createChannelService, getUserChannelsService } from "services/channel";
-import { Channel, channelDefault, ChannelMember } from "types/Channel";
+import { createChannelService, getChannelMessagesService, getUserChannelsService, sendChannelMessageService } from "services/channel";
+import { Channel, ChannelChat, ChannelMember } from "types/Channel";
 
 type ChannelState = {
+	activeChannel: Channel | null,
 	channels: {
 		metadata: Channel,
 		members: ChannelMember[] 
 	}[],
-	activeChannel: Channel;
+	loadedChannelChatIds: {[channelId: string]: true},
+	channelChat: {
+		[channelId: number]: ChannelChat[]
+	},
 	isCreatingChannel: boolean,
-	isLoadingChannels: boolean
+	isLoadingChannels: boolean,
+	isFetchingChannelConversation: boolean,
+	isSendingChannelMessage: boolean
 }
 
 const initialState: ChannelState = {
+	activeChannel: null,
 	channels: [],
-	activeChannel: channelDefault,
+	channelChat: {},
+	loadedChannelChatIds: {},
 	isCreatingChannel: false,
-	isLoadingChannels: false
+	isLoadingChannels: false,
+	isFetchingChannelConversation: false,
+	isSendingChannelMessage: false
+}
+
+const reducers = {
+	setActiveChannel(state: ChannelState, payload: PayloadAction<Channel | null>): void {
+			state.activeChannel = payload.payload;
+	},
+	addMessageToChannelChat(state: ChannelState, { payload }: PayloadAction<ChannelChat>): void {
+		if (payload.channel_id in state.channelChat) {
+			state.channelChat[payload.channel_id].push(payload);
+			return;
+		}
+
+		state.channelChat[payload.channel_id] = [payload];
+	}
 }
 
 const channel = createSlice({
 	name: 'channel',
 	initialState,
-	reducers: {
-		setActiveChannel(state: ChannelState, { payload }: PayloadAction<Channel>): void {
-			state.activeChannel = payload;
-		}
-	},
+	reducers,
 	extraReducers: (builder) => {
 		builder
+			.addCase(sendChannelMessageService.pending, (state) => {
+				state.isSendingChannelMessage = true;	
+			})
+			.addCase(sendChannelMessageService.fulfilled, (state) => {
+				state.isSendingChannelMessage = false;	
+			})
+			.addCase(sendChannelMessageService.rejected, (state) => {
+				state.isSendingChannelMessage = false;	
+			})
+
+			.addCase(getChannelMessagesService.pending, (state) => {
+				state.isFetchingChannelConversation = true;
+			})
+			.addCase(getChannelMessagesService.rejected, (state) => {
+				state.isFetchingChannelConversation = false;
+			})
+			.addCase(getChannelMessagesService.fulfilled, (state, { payload }) => {
+				if (!payload) return;
+
+				if (payload.channelId in state.channelChat) {
+					return;
+				}
+
+				state.channelChat[payload.channelId] = payload.data;
+				state.loadedChannelChatIds[payload.channelId] = true;
+				state.isFetchingChannelConversation = false;
+			})
+
 			.addCase(createChannelService.pending, (state) => {
 				state.isCreatingChannel = true;
 			})
@@ -41,6 +89,7 @@ const channel = createSlice({
 				})
 				state.isCreatingChannel = false;
 			})
+
 			.addCase(getUserChannelsService.pending, (state) => {
 				state.isLoadingChannels = true;
 			})
@@ -48,22 +97,24 @@ const channel = createSlice({
 				state.isLoadingChannels = false;
 			})
 			.addCase(getUserChannelsService.fulfilled, (state, { payload }) => {
-				payload?.data.forEach(value => {
-					const member = {
-						is_admin: value.is_admin, 
-						user_id: value.user_id
+				if (payload && payload.data) {
+					for (const value of payload?.data!) {
+						state.channels.push({
+							metadata: {
+								id: value.id,
+								name: value.name,
+								scope: value.scope
+							},
+							members: value.users
+						})
 					}
+				}
 
-					state.channels.push({
-						members: [ member ],
-						metadata: value.channel
-					})
-				})
 				state.isLoadingChannels = false;
 			})
 	}
 })
 
-export const { setActiveChannel } = channel.actions;
-export { ChannelState }
+export const { setActiveChannel, addMessageToChannelChat } = channel.actions;
+export { ChannelState };
 export default channel.reducer;

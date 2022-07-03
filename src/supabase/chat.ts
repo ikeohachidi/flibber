@@ -1,7 +1,7 @@
+import { RealtimeSubscription, SupabaseRealtimePayload } from "@supabase/supabase-js";
+import Chat, { RecentChat } from "types/Chat";
 import supabase from "./supabase";
 
-import Chat, { RecentChat } from "types/Chat";
-import { RealtimeSubscription, SupabaseRealtimePayload } from "@supabase/supabase-js";
 
 export const sendMessage = async(chat: Chat) => {
 	return supabase

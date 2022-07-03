@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User, { userDefault } from "types/User";
+import User  from "types/User";
 import Chat, { RecentChat } from "types/Chat";
 import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
 
 type ChatState = {
-	activeUserChat: User;
+	activeUserChat: User | null;
 	conversation: {
 		[userId: string]: Chat[]
 	};
@@ -12,23 +12,23 @@ type ChatState = {
 	recentConversations: {
 		[userId: string]: RecentChat
 	}
-	messageInTransit: boolean,
 	isFetchingConversation: boolean,
-	isFetchingRecentConversation: boolean
+	isFetchingRecentConversation: boolean,
+	isSendingUserMessage: boolean
 }
 
 const initialState: ChatState = {
-	activeUserChat: userDefault,
+	activeUserChat: null,
 	loadedConversations: [],
 	conversation: {},
 	recentConversations: {},
-	messageInTransit: false,
 	isFetchingConversation: false,
-	isFetchingRecentConversation: false
+	isFetchingRecentConversation: false,
+	isSendingUserMessage: false
 }
 
 const reducers = {
-	setActiveUserChat(state: ChatState, action: PayloadAction<User>) {
+	setActiveUserChat(state: ChatState, action: PayloadAction<User | null>) {
 		state.activeUserChat = action.payload;
 	},
 	setConversation(state: ChatState, action: PayloadAction<{ userId: string, conversation: Chat[] }>) {
@@ -93,11 +93,11 @@ const chat = createSlice({
 						type: 'chat/setRecentConversation'
 					})					
 
-					state.messageInTransit = false;
+					state.isSendingUserMessage = false;
 				}
 			})
 			.addCase(sendMessageService.pending, (state: ChatState) => {
-				state.messageInTransit = true;
+				state.isSendingUserMessage = true;
 			})
 			.addCase(getConversationService.fulfilled, (state: ChatState, action) => {
 				if (action.payload && action.payload.data) {

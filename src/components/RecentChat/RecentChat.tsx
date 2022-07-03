@@ -14,6 +14,7 @@ import Chat, { RecentChat } from 'types/Chat';
 
 import { AppState } from 'store';
 import { setActiveUserChat } from 'store/chat';
+import { setActiveChannel } from 'store/channel';
 
 type ContactsMessageProps = {
 	authUserId: number;
@@ -144,7 +145,8 @@ const Recent = (): JSX.Element => {
 
 	const selectUser = (user?: User) => {
 		if (user) {
-			dispatch(setActiveUserChat(user))
+			dispatch(setActiveUserChat(user));
+			dispatch(setActiveChannel(null));
 		}
 	}
 
