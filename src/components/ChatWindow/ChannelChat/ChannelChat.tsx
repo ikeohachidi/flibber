@@ -12,6 +12,10 @@ import { ChatType } from 'types/Chat'
 import User from 'types/User';
 import { Channel, ChannelChat as ChannelChatType } from 'types/Channel';
 import { getChannelMessagesService } from 'services/channel';
+import { channelListener } from 'supabase/channel';
+import { SupabaseRealtimePayload } from '@supabase/supabase-js';
+import { addMessageToConversation } from 'store/chat';
+import { addMessageToChannelChat } from 'store/channel';
 
 
 /**
@@ -61,6 +65,14 @@ const ChannelChat = ({ authUser }: Props): JSX.Element => {
 	useEffect(() => {
 		if (activeChannel.id! in loadedChannelChatIds) return;
 		dispatch(getChannelMessagesService(activeChannel.id!))
+
+		// TODO: ideally this should be in Application.tsx but supabase currently doesn't
+		// have a way to listen for realtime events using foreign keys
+		channelListener(activeChannel.id!, (payload: SupabaseRealtimePayload<ChannelChatType>) => {
+			dispatch(addMessageToChannelChat({
+				...payload.new
+			}))
+		})
 	}, [ activeChannel ])
 
 	return (

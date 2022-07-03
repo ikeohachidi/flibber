@@ -1,3 +1,4 @@
+import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 import { Channel, ChannelChat, ChannelMember, MemberChannelQueryResult } from 'types/Channel';
 import supabase from './supabase';
  
@@ -26,4 +27,21 @@ export const getChannelMessages = async(channelId: number) => {
 		.from<ChannelChat>('channel_chat')
 		.select('*')
 		.eq('channel_id', channelId)
+}
+
+export const channelListener = async(channelId: number, eventCallback: (payload: SupabaseRealtimePayload<ChannelChat>) => void) => {
+	const connect = supabase
+		.from(`channel_chat:channel_id=eq.${channelId}`)
+		.on('*', payload => {
+			eventCallback(payload);
+		})
+		.subscribe(() => {
+			console.log('realtime channel connection established')
+		})
+	
+	connect.onError(() => {
+		connect.rejoin()
+	})
+
+	return connect;
 }

@@ -27,14 +27,24 @@ const initialState: ChannelState = {
 	isFetchingChannelConversation: false
 }
 
+const reducers = {
+	setActiveChannel(state: ChannelState, payload: PayloadAction<Channel | null>): void {
+			state.activeChannel = payload.payload;
+	},
+	addMessageToChannelChat(state: ChannelState, { payload }: PayloadAction<ChannelChat>): void {
+		if (payload.channel_id in state.channelChat) {
+			state.channelChat[payload.channel_id].push(payload);
+			return;
+		}
+
+		state.channelChat[payload.channel_id] = [payload];
+	}
+}
+
 const channel = createSlice({
 	name: 'channel',
 	initialState,
-	reducers: {
-		setActiveChannel(state: ChannelState, payload: PayloadAction<Channel | null>): void {
-			state.activeChannel = payload.payload;
-		}
-	},
+	reducers,
 	extraReducers: (builder) => {
 		builder
 			.addCase(getChannelMessagesService.pending, (state) => {
@@ -53,16 +63,6 @@ const channel = createSlice({
 				state.channelChat[payload.channelId] = payload.data;
 				state.loadedChannelChatIds[payload.channelId] = true;
 				state.isFetchingChannelConversation = false;
-			})
-			.addCase(sendChannelMessageService.fulfilled, (state, { payload }) => {
-				if (!payload) return;
-
-				if (payload.channel_id in state.channelChat) {
-					state.channelChat[payload.channel_id].push(payload);
-					return;
-				}
-
-				state.channelChat[payload.channel_id] = [payload];
 			})
 			.addCase(createChannelService.pending, (state) => {
 				state.isCreatingChannel = true;
@@ -101,6 +101,6 @@ const channel = createSlice({
 	}
 })
 
-export const { setActiveChannel } = channel.actions;
+export const { setActiveChannel, addMessageToChannelChat } = channel.actions;
 export { ChannelState };
 export default channel.reducer;
