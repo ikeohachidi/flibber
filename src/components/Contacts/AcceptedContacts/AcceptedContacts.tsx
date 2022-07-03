@@ -6,6 +6,7 @@ import Spinner from 'components/Spinner/Spinner';
 
 import store, { AppState } from 'store';
 import { setActiveUserChat } from 'store/chat';
+import { setActiveChannel } from 'store/channel';
 import { fetchAcceptedContactsService} from 'services/contact';
 import User from 'types/User';
 
@@ -23,7 +24,8 @@ const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 	}, [props.userId])
 
 	const selectActiveUser = (contact: User) => {
-		dispatch(setActiveUserChat(contact))
+		dispatch(setActiveChannel(null));
+		dispatch(setActiveUserChat(contact));
 	}
 
 	return (
