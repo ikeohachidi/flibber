@@ -14,7 +14,8 @@ type ChannelState = {
 	},
 	isCreatingChannel: boolean,
 	isLoadingChannels: boolean,
-	isFetchingChannelConversation: boolean
+	isFetchingChannelConversation: boolean,
+	isSendingChannelMessage: boolean
 }
 
 const initialState: ChannelState = {
@@ -24,7 +25,8 @@ const initialState: ChannelState = {
 	loadedChannelChatIds: {},
 	isCreatingChannel: false,
 	isLoadingChannels: false,
-	isFetchingChannelConversation: false
+	isFetchingChannelConversation: false,
+	isSendingChannelMessage: false
 }
 
 const reducers = {
@@ -47,6 +49,16 @@ const channel = createSlice({
 	reducers,
 	extraReducers: (builder) => {
 		builder
+			.addCase(sendChannelMessageService.pending, (state) => {
+				state.isSendingChannelMessage = true;	
+			})
+			.addCase(sendChannelMessageService.fulfilled, (state) => {
+				state.isSendingChannelMessage = false;	
+			})
+			.addCase(sendChannelMessageService.rejected, (state) => {
+				state.isSendingChannelMessage = false;	
+			})
+
 			.addCase(getChannelMessagesService.pending, (state) => {
 				state.isFetchingChannelConversation = true;
 			})
@@ -64,6 +76,7 @@ const channel = createSlice({
 				state.loadedChannelChatIds[payload.channelId] = true;
 				state.isFetchingChannelConversation = false;
 			})
+
 			.addCase(createChannelService.pending, (state) => {
 				state.isCreatingChannel = true;
 			})
@@ -76,6 +89,7 @@ const channel = createSlice({
 				})
 				state.isCreatingChannel = false;
 			})
+
 			.addCase(getUserChannelsService.pending, (state) => {
 				state.isLoadingChannels = true;
 			})

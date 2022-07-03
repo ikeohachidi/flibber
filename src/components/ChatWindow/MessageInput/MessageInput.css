@@ -1,6 +1,6 @@
 .message-input-container {
 	background-color: var(--color-dark-highlight);
-	@apply flex items-center py-3 px-5 rounded-md;
+	@apply flex items-center py-3 px-5 rounded-md relative;
 }
 
 .message-input-container.disabled, .message-input-container.disabled > input:disabled {
@@ -18,4 +18,9 @@
 
 .message-input-container input:focus {
 	@apply outline-none;
+}
+
+.message-overlay {
+	@apply absolute top-0 bottom-0 left-0 right-0 rounded-md;
+	@apply bg-zinc-900/[.8];
 }

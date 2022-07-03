@@ -1,6 +1,8 @@
-import React, { KeyboardEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './MessageInput.css';
+
+import Spinner from 'components/Spinner/Spinner';
 
 import { sendMessageService } from 'services/chat';
 import { sendChannelMessageService } from 'services/channel';
@@ -8,6 +10,7 @@ import { Channel, ChannelChat } from 'types/Channel';
 import { ChatType, RecentChat } from 'types/Chat';
 import User from 'types/User';
 import { timeNow } from 'utils/date';
+import { AppState } from 'store';
 
 type Props = {
 	activeChatUser: User | null;
@@ -18,8 +21,22 @@ type Props = {
 const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.Element => {
 	const dispatch = useDispatch();
 
+	const isSendingChannelMessage = useSelector<AppState, boolean>(state => state.channel.isSendingChannelMessage);
+	const isSendingUserMessage = useSelector<AppState, boolean>(state => state.chat.isSendingUserMessage);
+	const messageInputEl = useRef<HTMLInputElement>(null);
+
+	const [ isSendingMessage, setIsSendingMessage ] = useState(false);
+	useEffect(() => {
+		if (isSendingChannelMessage || isSendingUserMessage) {
+			setIsSendingMessage(true);
+		} else {
+			messageInputEl.current!.value = '';
+			setIsSendingMessage(false);
+		}
+	}, [ isSendingChannelMessage, isSendingUserMessage ])
+
 	const activeChatType = () => {
-		if (activeChatUser) return 'user'
+		if (activeChatUser) return 'user';
 		return 'channel'
 	}
 
@@ -41,7 +58,6 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				}
 
 				dispatch(sendMessageService(chat))
-				target.value = '';
 			}
 			
 			if (activeChannel && activeChatType() === 'channel') {
@@ -56,7 +72,6 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				}
 
 				dispatch(sendChannelMessageService(chat))
-				target.value = '';
 			}
 		}
 	}
@@ -69,7 +84,7 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 	}
 
 	return (
-		<div className={ `message-input-container ${ activeChatUser && activeChatUser.id < 1 && 'disabled' }` }>
+		<div className={ `message-input-container ${ !shouldDisableInput() ? 'disabled': '' }` }>
 			<i className="ri-mic-2-line"></i>
 			<input 
 				disabled={ !shouldDisableInput() }
@@ -77,7 +92,17 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				type="text" 
 				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
 				onKeyDown={ sendMessage }
+				ref={ messageInputEl }
 			/>
+			{
+				isSendingMessage &&
+				<>
+					<div className={ 'message-overlay' }></div>
+					<Spinner 
+						size={'20px'}
+					/>
+				</>
+			}
 			<i className="ri-add-line mx-4"></i>
 			<i className="ri-send-plane-line"></i>
 		</div>

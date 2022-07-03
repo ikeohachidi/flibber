@@ -12,9 +12,9 @@ type ChatState = {
 	recentConversations: {
 		[userId: string]: RecentChat
 	}
-	messageInTransit: boolean,
 	isFetchingConversation: boolean,
-	isFetchingRecentConversation: boolean
+	isFetchingRecentConversation: boolean,
+	isSendingUserMessage: boolean
 }
 
 const initialState: ChatState = {
@@ -22,9 +22,9 @@ const initialState: ChatState = {
 	loadedConversations: [],
 	conversation: {},
 	recentConversations: {},
-	messageInTransit: false,
 	isFetchingConversation: false,
-	isFetchingRecentConversation: false
+	isFetchingRecentConversation: false,
+	isSendingUserMessage: false
 }
 
 const reducers = {
@@ -93,11 +93,11 @@ const chat = createSlice({
 						type: 'chat/setRecentConversation'
 					})					
 
-					state.messageInTransit = false;
+					state.isSendingUserMessage = false;
 				}
 			})
 			.addCase(sendMessageService.pending, (state: ChatState) => {
-				state.messageInTransit = true;
+				state.isSendingUserMessage = true;
 			})
 			.addCase(getConversationService.fulfilled, (state: ChatState, action) => {
 				if (action.payload && action.payload.data) {
