@@ -8,7 +8,7 @@ type ChatState = {
 	conversation: {
 		[userId: string]: Chat[]
 	};
-	loadedConversations: number[],
+	loadedConversations: {[userId: string]: true},
 	recentConversations: {
 		[userId: string]: RecentChat
 	}
@@ -19,7 +19,7 @@ type ChatState = {
 
 const initialState: ChatState = {
 	activeUserChat: null,
-	loadedConversations: [],
+	loadedConversations: {},
 	conversation: {},
 	recentConversations: {},
 	isFetchingConversation: false,
@@ -104,12 +104,12 @@ const chat = createSlice({
 					const { data, authUser } = action.payload;
 
 					for (let message of data) {
-						let particpant = message.to;
+						let participant = message.to;
 
-						if (message.to === authUser) particpant = message.from
+						if (message.to === authUser) participant = message.from
 
-						state.loadedConversations.push(particpant)
-						state.conversation[particpant] = data;
+						state.loadedConversations[participant] = true;
+						state.conversation[participant] = data;
 
 						break;
 					}

@@ -38,7 +38,7 @@ const SingleChat = ({ authUser }: Props): JSX.Element => {
 	const dispatch = useDispatch();
 
 	const activeChatUser = useSelector<AppState, User>(state => state.chat.activeUserChat!);
-	const loadedConversations = useSelector<AppState, number[]>(state => state.chat.loadedConversations);
+	const loadedConversations = useSelector<AppState, {[userId: string]: true}>(state => state.chat.loadedConversations);
 	const conversations = useSelector<AppState, Chat[]>(state => {
 		if (activeChatUser.id in state.chat.conversation) {
 			return state.chat.conversation[activeChatUser.id];
@@ -59,7 +59,7 @@ const SingleChat = ({ authUser }: Props): JSX.Element => {
 	}
 
 	useEffect(() => {
-		if (!loadedConversations.includes(activeChatUser.id)) {
+		if (!(activeChatUser.id in loadedConversations)) {
 			dispatch(getConversationService({
 				chatId: chatId(authUser.id, activeChatUser.id),
 				authUser: authUser.id
