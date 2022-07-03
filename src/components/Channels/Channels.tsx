@@ -32,16 +32,16 @@ const Channels = (props: Props): JSX.Element => {
 		}
 	}, [ props.authUser ])
 
-	const setActiveChannel = (channel: Channel): void => {
+	const setChannel = (channel: Channel): void => {
 		dispatch(setActiveUserChat(null));
 		dispatch(setActiveChannel(channel));
 	}
 
 	const channelsList = channels.map((channel, index) => (
-		<li className={`list-item`} key={ index }>
+		<li className={`list-item pointer`} key={ index }>
 			<span 
 				className="cursor-pointer" 
-				onClick={ () => setActiveChannel(channel) }
+				onClick={ () => setChannel(channel) }
 			>{ channel.name }</span>
 		</li>
 	))
