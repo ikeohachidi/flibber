@@ -14,7 +14,6 @@ import { Channel, ChannelChat as ChannelChatType } from 'types/Channel';
 import { getChannelMessagesService } from 'services/channel';
 import { channelListener } from 'supabase/channel';
 import { SupabaseRealtimePayload } from '@supabase/supabase-js';
-import { addMessageToConversation } from 'store/chat';
 import { addMessageToChannelChat } from 'store/channel';
 
 
@@ -73,7 +72,7 @@ const ChannelChat = ({ authUser }: Props): JSX.Element => {
 				...payload.new
 			}))
 		})
-	}, [ activeChannel ])
+	}, [ activeChannel, loadedChannelChatIds ])
 
 	return (
 		<>

@@ -22,7 +22,7 @@ export const getUserChannelsService = createAsyncThunk('channel/getUserChannel',
 })
 
 export const sendChannelMessageService = createAsyncThunk( 'channel/sendMessageChat', async (chat: ChannelChat) => {
-	const { data, error } = await sendChannelMessage(chat);
+	const { error } = await sendChannelMessage(chat);
 	if (error) return;
 
 	return chat

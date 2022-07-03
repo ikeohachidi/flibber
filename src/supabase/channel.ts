@@ -1,5 +1,5 @@
 import { SupabaseRealtimePayload } from '@supabase/supabase-js';
-import { Channel, ChannelChat, ChannelMember, MemberChannelQueryResult } from 'types/Channel';
+import { Channel, ChannelChat, ChannelMember } from 'types/Channel';
 import supabase from './supabase';
  
 export const createChannel = (channel: Channel, member: ChannelMember) => {
