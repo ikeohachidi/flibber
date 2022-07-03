@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import MessageInput from './MessageInput/MessageInput';
 import SingleChat from './SingleChat/SingleChat';
+import ChannelChat from './ChannelChat/ChannelChat';
 import Spinner from 'components/Spinner/Spinner';
 
 import './ChatWindow.css';
@@ -19,9 +20,10 @@ const ChatWindow = (): JSX.Element => {
 	const activeChannel = useSelector<AppState, Channel | null>(state => state.channel.activeChannel);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
 	const isFetchingSingleConversation = useSelector<AppState, boolean>(state => state.chat.isFetchingConversation);
+	const isFetchingChannelConversation = useSelector<AppState, boolean>(state => state.channel.isFetchingChannelConversation)
 
 	const isLoading = (): boolean => {
-		if (isFetchingSingleConversation) return true;
+		if (isFetchingSingleConversation || isFetchingChannelConversation) return true;
 
 		return false;
 	}
@@ -44,7 +46,7 @@ const ChatWindow = (): JSX.Element => {
 			case 'user':
 				return <SingleChat authUser={ authUser }/>
 			case 'channel':
-				return <h1>Channel</h1>
+				return <ChannelChat authUser={authUser}/>
 			default:
 				return <h1>Neither</h1>
 		}

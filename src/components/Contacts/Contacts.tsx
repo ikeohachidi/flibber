@@ -14,6 +14,7 @@ import { setActiveUserChat } from 'store/chat';
 import { acceptContactRequestService, declineContactRequestService, fetchAcceptedContactsService, fetchPendingRequestService } from 'services/contact';
 
 import User from 'types/User';
+import { setActiveChannel } from 'store/channel';
 
 const PendingContacts = (props: { userId: number }): JSX.Element => {
 	const pendingContacts = useSelector<AppState, User[]>(state => state.contacts.pendingContacts);
@@ -85,7 +86,8 @@ const AcceptedContacts = (props: AcceptedContactsProps): JSX.Element => {
 	}, [props.userId])
 
 	const selectActiveUser = (contact: User) => {
-		dispatch(setActiveUserChat(contact))
+		dispatch(setActiveUserChat(contact));
+		dispatch(setActiveChannel(null));
 	}
 
 	return (

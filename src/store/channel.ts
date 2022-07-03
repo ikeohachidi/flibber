@@ -8,19 +8,23 @@ type ChannelState = {
 		metadata: Channel,
 		members: ChannelMember[] 
 	}[],
+	loadedChannelChatIds: {[channelId: string]: true},
 	channelChat: {
 		[channelId: number]: ChannelChat[]
 	},
 	isCreatingChannel: boolean,
-	isLoadingChannels: boolean
+	isLoadingChannels: boolean,
+	isFetchingChannelConversation: boolean
 }
 
 const initialState: ChannelState = {
 	activeChannel: null,
 	channels: [],
 	channelChat: {},
+	loadedChannelChatIds: {},
 	isCreatingChannel: false,
-	isLoadingChannels: false
+	isLoadingChannels: false,
+	isFetchingChannelConversation: false
 }
 
 const channel = createSlice({
@@ -33,15 +37,22 @@ const channel = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			.addCase(getChannelMessagesService.pending, (state) => {
+				state.isFetchingChannelConversation = true;
+			})
+			.addCase(getChannelMessagesService.rejected, (state) => {
+				state.isFetchingChannelConversation = false;
+			})
 			.addCase(getChannelMessagesService.fulfilled, (state, { payload }) => {
 				if (!payload) return;
 
 				if (payload.channelId in state.channelChat) {
-					state.channelChat[payload.channelId] = [...state.channelChat[payload.channelId], ...payload.data];
 					return;
 				}
 
 				state.channelChat[payload.channelId] = payload.data;
+				state.loadedChannelChatIds[payload.channelId] = true;
+				state.isFetchingChannelConversation = false;
 			})
 			.addCase(sendChannelMessageService.fulfilled, (state, { payload }) => {
 				if (!payload) return;
@@ -84,8 +95,8 @@ const channel = createSlice({
 						})
 					}
 				}
-				state.isLoadingChannels = false;
 
+				state.isLoadingChannels = false;
 			})
 	}
 })
