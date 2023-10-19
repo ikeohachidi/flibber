@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Signup.css';
 
@@ -10,6 +10,7 @@ const Signup = () => {
 	const name = useRef<HTMLInputElement>(null);
 	const email = useRef<HTMLInputElement>(null);
 	const password = useRef<HTMLInputElement>(null);
+	const [ passwordType, setPasswordType ] = useState<'text' | 'password'>('password');
 	
 	const createUserAccount = () => {
 		signUp({
@@ -25,6 +26,10 @@ const Signup = () => {
 			}
 			navigation(RoutePath.APP)
 		})
+	}
+
+	const togglePasswordDisplay = () => {
+		setPasswordType(passwordType === 'text' ? 'password' : 'text');
 	}
 
 	useEffect(() => {
@@ -46,7 +51,17 @@ const Signup = () => {
 				</div>
 				<div className="input-block col-span-2">
 					<label>Password</label>
-					<input type="password" ref={ password }/>
+					<div className="password-box flex items-center">
+						<input className="grow" type={ passwordType } ref={ password }/>
+						<i className={
+								`${passwordType === 'password' ? 'ri-eye-line' : 'ri-eye-off-line' }
+								text-lg ml-5
+								text-white
+								cursor-pointer`
+							}
+							onClick={ togglePasswordDisplay }
+						></i>
+					</div>
 				</div>
 
 				<div className="col-span-2 flex justify-end">
