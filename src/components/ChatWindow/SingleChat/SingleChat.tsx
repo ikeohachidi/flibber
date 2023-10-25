@@ -62,10 +62,11 @@ const SingleChat = ({ authUser }: Props): JSX.Element => {
 		if (!(activeChatUser.id in loadedConversations)) {
 			dispatch(getConversationService({
 				chatId: chatId(authUser.id, activeChatUser.id),
-				authUser: authUser.id
+				authUser: authUser.id,
+				activeChatUser: activeChatUser.id
 			}))
 		}
-
+ 
 	}, [ activeChatUser ])
 
 	return (

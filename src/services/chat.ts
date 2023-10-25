@@ -24,13 +24,13 @@ export const sendMessageService = createAsyncThunk('chat/sendMessage', async (re
 	}
 })
 
-export const getConversationService = createAsyncThunk('chat/getConversation', async(payload: { chatId: number, authUser: number }) => {
+export const getConversationService = createAsyncThunk('chat/getConversation', async(payload: { chatId: number, authUser: number, activeChatUser: number }) => {
 	const { data, error } = await getConversation(payload.chatId);
-	if (error) return;
+	if (error) return { ...payload, data: [] };
 
 	return {
-		authUser: payload.authUser,
-		data
+		data,
+		...payload,
 	};
 })
 

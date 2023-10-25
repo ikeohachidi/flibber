@@ -48,7 +48,7 @@ const ChatWindow = (): JSX.Element => {
 			case 'channel':
 				return <ChannelChat authUser={authUser}/>
 			default:
-				return <h1>Neither</h1>
+				return <span></span>
 		}
 	}
 

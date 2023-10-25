@@ -100,22 +100,23 @@ const chat = createSlice({
 				state.isSendingUserMessage = true;
 			})
 			.addCase(getConversationService.fulfilled, (state: ChatState, action) => {
-				if (action.payload && action.payload.data) {
-					const { data, authUser } = action.payload;
+				const { data, authUser, activeChatUser } = action.payload;
+
+				state.loadedConversations[activeChatUser] = true;
+
+				if (data && data.length) {
 
 					for (let message of data) {
-						let participant = message.to;
 
-						if (message.to === authUser) participant = message.from
+						let participant = message.to === authUser ? message.from : message.to;
 
-						state.loadedConversations[participant] = true;
 						state.conversation[participant] = data;
 
 						break;
 					}
-
-					state.isFetchingConversation = false;
 				}
+
+				state.isFetchingConversation = false;
 			})
 			.addCase(getConversationService.rejected, (state: ChatState) => {
 				state.isFetchingConversation = false;
