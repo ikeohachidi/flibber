@@ -4,7 +4,8 @@ import User from "./User";
 export enum ChatType {
 	TEXT = 'text',
 	IMAGE = 'image',
-	VIDEO = 'video'
+	VIDEO = 'video',
+	FILE = 'file'
 }
 
 export interface Message {

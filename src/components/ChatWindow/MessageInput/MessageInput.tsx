@@ -40,39 +40,49 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 		return 'channel'
 	}
 
-	const sendMessage = (e: KeyboardEvent) => {
+	const sendMessage = (value: string) => {
+		if (activeChatUser && activeChatType() === 'user') {
+			const chat: RecentChat = {
+				to: activeChatUser,
+				from: authUser,
+				created_at: timeNow(),
+				message: {
+					type: ChatType.TEXT,
+					value
+				}
+			}
+
+			dispatch(sendMessageService(chat))
+		}
+		
+		if (activeChannel && activeChatType() === 'channel') {
+			const chat: ChannelChat = {
+				sender_id: authUser.id,
+				channel_id: activeChannel.id!,
+				created_at: timeNow(),
+				message: {
+					type: ChatType.TEXT,
+					value 
+				}
+			}
+
+			dispatch(sendChannelMessageService(chat))
+		}
+	}
+
+	const onInputKeyDown = (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
 
 		if (target.value === '') return;
 
 		if (e.key === 'Enter') {
-			if (activeChatUser && activeChatType() === 'user') {
-				const chat: RecentChat = {
-					to: activeChatUser,
-					from: authUser,
-					created_at: timeNow(),
-					message: {
-						type: ChatType.TEXT,
-						value: target.value 
-					}
-				}
+			sendMessage(target.value)
+		}
+	}
 
-				dispatch(sendMessageService(chat))
-			}
-			
-			if (activeChannel && activeChatType() === 'channel') {
-				const chat: ChannelChat = {
-					sender_id: authUser.id,
-					channel_id: activeChannel.id!,
-					created_at: timeNow(),
-					message: {
-						type: ChatType.TEXT,
-						value: target.value 
-					}
-				}
-
-				dispatch(sendChannelMessageService(chat))
-			}
+	const onSendBtnClick = () => {
+		if (messageInputEl.current?.value) {
+			sendMessage(messageInputEl.current.value)
 		}
 	}
 
@@ -91,7 +101,7 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				className="custom" 
 				type="text" 
 				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
-				onKeyDown={ sendMessage }
+				onKeyDown={ onInputKeyDown }
 				ref={ messageInputEl }
 			/>
 			{
@@ -103,8 +113,8 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 					/>
 				</>
 			}
-			<i className="ri-add-line mx-4"></i>
-			<i className="ri-send-plane-line"></i>
+			<i className="ri-add-line mx-4 cursor-pointer"></i>
+			<i className="ri-send-plane-line cursor-pointer" onClick={ onSendBtnClick }></i>
 		</div>
 	)
 }
