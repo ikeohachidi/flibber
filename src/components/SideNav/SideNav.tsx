@@ -6,6 +6,7 @@ import Avatar from "components/Avatar/Avatar";
 import { signOut } from 'supabase/authentication';
 import User from 'types/User';
 import { useNavigate } from 'react-router';
+import { removeUser } from 'store/user';
 
 import RoutePath from 'routes';
 import { useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ const SideNav = (props: Props): JSX.Element => {
 	const signOutUser = () => {
 		signOut()
 			.then(() => {
+				removeUser();
 				navigation(RoutePath.LOGIN)
 			})
 	}
