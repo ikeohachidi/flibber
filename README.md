@@ -14,7 +14,7 @@ If you're reading this sorry for the lack of a documentation, I'll get to that a
 
 # Project setup
 - Create a project on supabase
-- Create a `.env` file at the root of the project add the following inside
+- Rename the `.env.example` to `.env`
 	```
 	REACT_APP_SUPABASE_URL=""
 	REACT_APP_SUPABASE_KEY=""
