@@ -21,6 +21,7 @@ const Application = () => {
 	const dispatch = useDispatch();
 
 	const users = useSelector<AppState, User[]>(state => state.contacts.acceptedContacts);
+	const authUser = useSelector<AppState, User | null>(state => state.user.user);
 
 	const activeUserMetadata = useActiveUser((activeUser, userMetadata) => {
 		if (activeUser === null) {
@@ -28,7 +29,9 @@ const Application = () => {
 			return;
 		}
 
-		dispatch(setUser( userMetadata ))
+		if (!authUser) {
+			dispatch(setUser( userMetadata ))
+		}
 	});
 
 	const findUser = (from: number) => {

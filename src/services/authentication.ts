@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import User, { Credentials } from "types/User";
+import { Credentials } from "types/User";
 
 import { signIn } from "supabase/authentication";
 import { getUser } from "supabase/user";
