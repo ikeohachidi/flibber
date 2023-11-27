@@ -13,7 +13,6 @@ import { chatId } from 'utils/chat';
 import Chat, { ChatType } from 'types/Chat'
 import User from 'types/User';
 import { CONVERSATION_TYPE } from 'types';
-import { conversationIdGenerator } from 'utils/idGenerator';
 import { ChannelChat } from 'types/Channel';
 
 interface Props {
@@ -37,7 +36,7 @@ const SingleChat = ({ authUser }: Props): JSX.Element => {
 		if (conversation.message.type === ChatType.FILE) {
 			await deleteFileFromStorage({
 				fileName: conversation.message.value,
-				path: conversationIdGenerator(authUser.id, activeChatUser!.id as number)
+				path: chatId(authUser.id, activeChatUser!.id as number)
 			});
 		}
 
