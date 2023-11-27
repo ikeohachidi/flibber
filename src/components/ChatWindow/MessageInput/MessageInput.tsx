@@ -14,7 +14,7 @@ import { timeNow } from 'utils/date';
 import { STORAGE_MAX_SIZE } from 'utils/envs';
 import { AppState } from 'store';
 import { uploadFile } from 'supabase/storage';
-import { conversationIdGenerator } from 'utils/idGenerator'
+import { chatId } from 'utils/chat';
 
 type Props = {
 	activeChatUser: User | null;
@@ -108,7 +108,7 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				await uploadFile({
 					file: files[0],
 					path: activeChatType() === CONVERSATION_TYPE.CHAT
-						? conversationIdGenerator(authUser.id, activeChatUser!.id as number)
+						? chatId(authUser.id, activeChatUser!.id as number)
 						: activeChannel!.id
 				})
 				sendMessage({ type: ChatType.FILE, value: files[0].name, })

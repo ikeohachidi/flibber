@@ -6,6 +6,8 @@ import Chat, { ChatType } from 'types/Chat';
 import User from 'types/User';
 import { ChannelChat } from 'types/Channel';
 import { CONVERSATION_TYPE } from 'types';
+import { getFileUrl, downloadFile as downloadFromStorage } from 'supabase/storage';
+import { downloadBlob } from 'utils/file';
 
 interface Props {
 	chatTitle: string,
@@ -33,6 +35,16 @@ const isMessageInAStreak = (messageIndex: number, messages: Chat[] | ChannelChat
 }
 
 const MessageList = (props: Props): JSX.Element => {
+	const chatDetailsEl = useRef<HTMLDivElement>(null);
+	const chatBoxEl = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!chatBoxEl.current) return;
+	
+		const height = chatBoxEl.current.scrollHeight;
+		chatBoxEl.current.scrollTo({ top: height, behavior: 'smooth' });
+	}, []);
+
 	const isSignedInUserSender = (conversation: Chat | ChannelChat) => {
 		// if from is in the object then it's a one to one chat
 		if (conversation.hasOwnProperty('from')) {
@@ -40,9 +52,6 @@ const MessageList = (props: Props): JSX.Element => {
 		}
 		return (conversation as ChannelChat).sender_id === props.authUser.id;
 	}
-
-	const chatDetailsEl = useRef<HTMLDivElement>(null);
-	const chatBoxEl = useRef<HTMLDivElement>(null);
 
 	const toggleChatDetails = (state: boolean): void => {
 		if (state) {
@@ -52,24 +61,59 @@ const MessageList = (props: Props): JSX.Element => {
 		}
 	}
 
-	useEffect(() => {
-		if (!chatBoxEl.current) return;
-	
-		const height = chatBoxEl.current.scrollHeight;
-		chatBoxEl.current.scrollTo({ top: height, behavior: 'smooth' });
-	}, []);
+	const openFile = (convo: Chat | ChannelChat) => {
+		const url = getFileUrl({
+			fileName: convo.message.value,
+			path: props.chatType === CONVERSATION_TYPE.CHAT
+				? (convo as Chat).conversation_id
+				: (convo as ChannelChat).id as number
+		});
+
+		if (url) {
+			window.open(url, '_blank');
+		}
+	}
+
+	const downloadFile = async (convo: Chat | ChannelChat) => {
+		try {
+			const data = await downloadFromStorage({
+				fileName: convo.message.value,
+				path: props.chatType === CONVERSATION_TYPE.CHAT
+					? (convo as Chat).conversation_id
+					: (convo as ChannelChat).id as number
+			});
+
+			if (!data) return;
+
+			downloadBlob(data, convo.message.value);
+		} catch(e) {
+			// TODO: handle error
+			console.error(e)
+		}
+	}
 
 	const displayMessage = (conversation: ChannelChat | Chat): JSX.Element => {
 		switch (conversation.message.type) {
 			case ChatType.FILE:
-				return <div className="text-bubble flex content-center cursor-pointer">
-					<span className="mr-auto">{ conversation.message.value }</span>
-					<i className="ri-download-line mr-3"></i>
-					{
-						isSignedInUserSender(conversation) &&
-						<i className="ri-close-line" onClick={ () => props.deleteMessageFunc(conversation) }></i>
-					}
-				</div>
+				return (
+					<div 
+						className="text-bubble flex content-center cursor-pointer"
+						onClick={ () => openFile(conversation) }
+					>
+						<span className="mr-auto">{ conversation.message.value }</span>
+						<i
+							className="ri-download-line mr-3"
+							onClick={ (e) => { e.stopPropagation(); downloadFile(conversation) } }
+						></i>
+						{
+							isSignedInUserSender(conversation) &&
+							<i
+								className="ri-close-line"
+								onClick={ (e) => { e.stopPropagation(); props.deleteMessageFunc(conversation) } }
+							></i>
+						}
+					</div>
+				)
 			default:
 				// assume text as the default
 				return <p className="text-bubble">{ conversation.message.value }</p>

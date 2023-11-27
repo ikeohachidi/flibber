@@ -40,8 +40,18 @@ export const getFileUrl = (param: { fileName: string, path: string | number }) =
 	const { publicURL, error } = supabase.storage.from(STORAGE_BUCKET as string).getPublicUrl(`${param.path}/${param.fileName}`)
 
 	if (error) {
-		Promise.reject(error)
+		return '';
 	}
 
 	return publicURL;
+}
+
+export const downloadFile = async (param: { fileName: string, path: string | number }) => {
+	const { data, error } = await supabase.storage.from(STORAGE_BUCKET as string).download(`${param.path}/${param.fileName}`)
+
+	if (error) {
+		Promise.reject(error)
+	}
+
+	return data;
 }
