@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Channel, ChannelChat, ChannelMember } from "types/Channel";
-import { createChannel, getChannelMessages, getUserChannels, sendChannelMessage } from "supabase/channel";
+import { createChannel, deleteChannelMessage, getChannelMessages, getUserChannels, sendChannelMessage } from "supabase/channel";
 
 export const createChannelService = createAsyncThunk('channel/createChannel', async (payload: { channel: Channel, member: ChannelMember}) => {
 	const { data, error } = await createChannel(payload.channel, payload.member)
@@ -23,6 +23,13 @@ export const getUserChannelsService = createAsyncThunk('channel/getUserChannel',
 
 export const sendChannelMessageService = createAsyncThunk( 'channel/sendMessageChat', async (chat: ChannelChat) => {
 	const { error } = await sendChannelMessage(chat);
+	if (error) return;
+
+	return chat
+})
+
+export const deleteChannelMessageService = createAsyncThunk( 'channel/deleteMessage', async (chat: ChannelChat) => {
+	const { error } = await deleteChannelMessage(chat.id as number);
 	if (error) return;
 
 	return chat

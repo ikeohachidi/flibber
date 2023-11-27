@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import User  from "types/User";
 import Chat, { RecentChat } from "types/Chat";
-import { getConversationService, getRecentConversations, sendMessageService } from "services/chat";
+import { getConversationService, getRecentConversations, sendMessageService, deleteMessageService } from "services/chat";
 
 type ChatState = {
 	activeUserChat: User | null;
@@ -91,13 +91,19 @@ const chat = createSlice({
 							conversation: recentChat 
 						},
 						type: 'chat/setRecentConversation'
-					})					
+					})
 
 					state.isSendingUserMessage = false;
 				}
 			})
 			.addCase(sendMessageService.pending, (state: ChatState) => {
 				state.isSendingUserMessage = true;
+			})
+			.addCase(deleteMessageService.fulfilled, ( state: ChatState, action ) => {
+				if (action.payload) {
+					const index = state.conversation[action.payload.to].findIndex(c => c.id === action.payload!.id)
+					state.conversation[action.payload.to].splice(index, 1);
+				}
 			})
 			.addCase(getConversationService.fulfilled, (state: ChatState, action) => {
 				const { data, authUser, activeChatUser } = action.payload;

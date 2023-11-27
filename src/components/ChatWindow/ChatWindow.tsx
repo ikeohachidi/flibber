@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import MessageInput from './MessageInput/MessageInput';
 import SingleChat from './SingleChat/SingleChat';
@@ -14,8 +14,6 @@ import User from 'types/User';
 import { Channel } from 'types/Channel';
 
 const ChatWindow = (): JSX.Element => {
-	const dispatch = useDispatch();
-
 	const activeChatUser = useSelector<AppState, User | null>(state => state.chat.activeUserChat);
 	const activeChannel = useSelector<AppState, Channel | null>(state => state.channel.activeChannel);
 	const authUser = useSelector<AppState, User>(state => state.user.user!);
@@ -44,7 +42,7 @@ const ChatWindow = (): JSX.Element => {
 	const ChatTypeDisplay = () => {
 		switch (chatType()) {
 			case 'user':
-				return <SingleChat authUser={ authUser }/>
+				return <SingleChat authUser={ authUser } />
 			case 'channel':
 				return <ChannelChat authUser={authUser}/>
 			default:
@@ -68,7 +66,6 @@ const ChatWindow = (): JSX.Element => {
 					activeChatUser={ activeChatUser }
 					activeChannel={ activeChannel }
 					authUser={ authUser }
-					
 				/>
 			</div>
 		</section>

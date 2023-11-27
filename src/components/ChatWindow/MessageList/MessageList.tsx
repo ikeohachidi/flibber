@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import ChatDetails from '../ChatDetails/ChatDetails';
 import Avatar from 'components/Avatar/Avatar';
@@ -11,7 +11,8 @@ interface Props {
 	chatTitle: string,
 	conversations: Chat[] | ChannelChat[]
 	authUser: User,
-	chatType: CONVERSATION_TYPE
+	chatType: CONVERSATION_TYPE,
+	deleteMessageFunc: (conversation: Chat | ChannelChat) => Promise<void>
 }
 
 /**
@@ -41,11 +42,37 @@ const MessageList = (props: Props): JSX.Element => {
 	}
 
 	const chatDetailsEl = useRef<HTMLDivElement>(null);
+	const chatBoxEl = useRef<HTMLDivElement>(null);
+
 	const toggleChatDetails = (state: boolean): void => {
 		if (state) {
 			chatDetailsEl.current?.classList.remove('hide');
 		} else {
 			chatDetailsEl.current?.classList.add('hide');
+		}
+	}
+
+	useEffect(() => {
+		if (!chatBoxEl.current) return;
+	
+		const height = chatBoxEl.current.scrollHeight;
+		chatBoxEl.current.scrollTo({ top: height, behavior: 'smooth' });
+	}, []);
+
+	const displayMessage = (conversation: ChannelChat | Chat): JSX.Element => {
+		switch (conversation.message.type) {
+			case ChatType.FILE:
+				return <div className="text-bubble flex content-center cursor-pointer">
+					<span className="mr-auto">{ conversation.message.value }</span>
+					<i className="ri-download-line mr-3"></i>
+					{
+						isSignedInUserSender(conversation) &&
+						<i className="ri-close-line" onClick={ () => props.deleteMessageFunc(conversation) }></i>
+					}
+				</div>
+			default:
+				// assume text as the default
+				return <p className="text-bubble">{ conversation.message.value }</p>
 		}
 	}
 
@@ -61,7 +88,7 @@ const MessageList = (props: Props): JSX.Element => {
 				<i className="ri-more-fill" onClick={ () => toggleChatDetails(true) }></i>
 			</div>
 
-			<div className="chat-box">
+			<div className="chat-box" ref={ chatBoxEl }>
 				{
 					props.conversations.map((conversation, index) => (
 						<div 
@@ -75,9 +102,7 @@ const MessageList = (props: Props): JSX.Element => {
 								}
 							</div>
 							<div className="w-11/12 mx-3">
-								{ conversation.message.type === ChatType.TEXT &&
-									<p className="text-bubble">{ conversation.message.value }</p>
-								}
+								{ displayMessage(conversation) }
 							</div>
 						</div>
 					))	

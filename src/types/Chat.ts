@@ -13,6 +13,7 @@ export interface Message {
 	value: string;
 }
 export default interface Chat {
+	id?: number;
 	from: number;
 	to: number;
 	created_at?: string;

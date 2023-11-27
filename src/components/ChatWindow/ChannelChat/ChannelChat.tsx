@@ -14,6 +14,9 @@ import { channelListener } from 'supabase/channel';
 import { SupabaseRealtimePayload } from '@supabase/supabase-js';
 import { addMessageToChannelChat } from 'store/channel';
 import { CONVERSATION_TYPE } from 'types';
+import Chat, { ChatType } from 'types/Chat';
+import { deleteFile as deleteFileFromStorage } from 'supabase/storage';
+import { deleteChannelMessageService } from 'services/channel'
 
 interface Props {
 	authUser: User
@@ -31,6 +34,17 @@ const ChannelChat = ({ authUser }: Props): JSX.Element => {
 
 		return [];
 	});
+
+	const deleteMessage = async (convo: Chat | ChannelChatType): Promise<void> => {
+		if (convo.message.type === ChatType.FILE) {
+			await deleteFileFromStorage({
+				fileName: convo.message.value,
+				path: activeChannel.id 
+			});
+		}
+
+		dispatch(deleteChannelMessageService(convo as ChannelChatType));
+	}
 
 	useEffect(() => {
 		if (activeChannel.id! in loadedChannelChatIds) return;
@@ -50,6 +64,7 @@ const ChannelChat = ({ authUser }: Props): JSX.Element => {
 		chatTitle={ activeChannel.name }
 		conversations={ conversations }
 		authUser={ authUser }
+		deleteMessageFunc={ deleteMessage }
 		chatType={ CONVERSATION_TYPE.CHANNEL }
 	></MessageList>;
 }

@@ -21,6 +21,12 @@ export const sendChannelMessage = async(chat: ChannelChat) => {
 		.insert(chat)
 }
 
+export const deleteChannelMessage = async(id: number) => {
+	return supabase
+		.from('channel_chat')
+		.delete()
+		.eq('id', id)
+}
 
 export const getChannelMessages = async(channelId: number) => {
 	return supabase	

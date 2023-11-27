@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createChannelService, getChannelMessagesService, getUserChannelsService, sendChannelMessageService } from "services/channel";
+import {
+	createChannelService,
+	getChannelMessagesService,
+	getUserChannelsService,
+	sendChannelMessageService,
+	deleteChannelMessageService
+} from "services/channel";
 import { Channel, ChannelChat, ChannelMember } from "types/Channel";
 
 type ChannelState = {
@@ -57,6 +63,17 @@ const channel = createSlice({
 			})
 			.addCase(sendChannelMessageService.rejected, (state) => {
 				state.isSendingChannelMessage = false;	
+			})
+			.addCase(deleteChannelMessageService.fulfilled, (state, { payload }) => {
+				if (!payload) return;
+			
+				const { channel_id, id } = payload;
+
+				const index = state.channelChat[channel_id].findIndex(chat => chat.id === id);
+
+				if (index < 0) return;
+
+				state.channelChat[channel_id].splice(index, 1);
 			})
 
 			.addCase(getChannelMessagesService.pending, (state) => {
