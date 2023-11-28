@@ -8,9 +8,13 @@ import { sendMessageService } from 'services/chat';
 import { sendChannelMessageService } from 'services/channel';
 import { Channel, ChannelChat } from 'types/Channel';
 import { ChatType, RecentChat } from 'types/Chat';
+import { CONVERSATION_TYPE } from 'types';
 import User from 'types/User';
 import { timeNow } from 'utils/date';
+import { STORAGE_MAX_SIZE } from 'utils/envs';
 import { AppState } from 'store';
+import { uploadFile } from 'supabase/storage';
+import { chatId } from 'utils/chat';
 
 type Props = {
 	activeChatUser: User | null;
@@ -35,52 +39,94 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 		}
 	}, [ isSendingChannelMessage, isSendingUserMessage ])
 
-	const activeChatType = () => {
-		if (activeChatUser) return 'user';
-		return 'channel'
+	const activeChatType = (): CONVERSATION_TYPE => {
+		if (activeChatUser) return CONVERSATION_TYPE.CHAT;
+		return CONVERSATION_TYPE.CHANNEL;
 	}
 
-	const sendMessage = (e: KeyboardEvent) => {
+	const sendMessage = (message: { type: ChatType, value: string }) => {
+		if (activeChatUser && activeChatType() === CONVERSATION_TYPE.CHAT) {
+			const chat: RecentChat = {
+				to: activeChatUser,
+				from: authUser,
+				created_at: timeNow(),
+				message,
+			}
+
+			dispatch(sendMessageService(chat))
+		}
+		
+		if (activeChannel && activeChatType() === CONVERSATION_TYPE.CHANNEL) {
+			const chat: ChannelChat = {
+				sender_id: authUser.id,
+				channel_id: activeChannel.id!,
+				created_at: timeNow(),
+				message,
+			}
+
+			dispatch(sendChannelMessageService(chat))
+		}
+	}
+
+	const onInputKeyDown = (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
 
 		if (target.value === '') return;
 
 		if (e.key === 'Enter') {
-			if (activeChatUser && activeChatType() === 'user') {
-				const chat: RecentChat = {
-					to: activeChatUser,
-					from: authUser,
-					created_at: timeNow(),
-					message: {
-						type: ChatType.TEXT,
-						value: target.value 
-					}
-				}
-
-				dispatch(sendMessageService(chat))
-			}
-			
-			if (activeChannel && activeChatType() === 'channel') {
-				const chat: ChannelChat = {
-					sender_id: authUser.id,
-					channel_id: activeChannel.id!,
-					created_at: timeNow(),
-					message: {
-						type: ChatType.TEXT,
-						value: target.value 
-					}
-				}
-
-				dispatch(sendChannelMessageService(chat))
-			}
+			sendMessage({ type: ChatType.TEXT, value: target.value })
 		}
 	}
 
-	const shouldDisableInput = (): boolean => {
-		if (activeChatType() === 'user' && activeChatUser) return true;
-		if (activeChatType() === 'channel' && activeChannel) return true;
+	const onSendBtnClick = () => {
+		if (messageInputEl.current?.value) {
+			sendMessage({ type: ChatType.TEXT, value: messageInputEl.current.value })
+		}
+	}
 
-		return false;
+	const openFileExplorer = () => {
+		const inputEl = document.createElement('input')
+		inputEl.setAttribute('type', 'file')
+
+		inputEl.click()
+
+		const onInputElChange = async (value: Event) => {
+			const target = value.target as HTMLInputElement
+			const files = (target.files || []) as File[]
+
+			if (!files) return
+
+			// check size of files
+			for (let { size } of files) {
+				if (size > Number(STORAGE_MAX_SIZE)) {
+					console.error(`File too large, max file size is ${STORAGE_MAX_SIZE}`);
+					return;
+				}
+			}
+
+			try {
+				await uploadFile({
+					file: files[0],
+					path: activeChatType() === CONVERSATION_TYPE.CHAT
+						? chatId(authUser.id, activeChatUser!.id as number)
+						: activeChannel!.id
+				})
+				sendMessage({ type: ChatType.FILE, value: files[0].name, })
+			} catch(e) {
+				// TODO: handle error ( may have to do upload rollback if db update fails)
+			}
+	
+			inputEl.removeEventListener('input', onInputElChange)
+		}
+
+		inputEl.addEventListener('change', onInputElChange)
+	}
+
+	const shouldDisableInput = (): boolean => {
+		if (activeChatType() === CONVERSATION_TYPE.CHAT && activeChatUser) return true
+		if (activeChatType() === CONVERSATION_TYPE.CHANNEL && activeChannel) return true
+
+		return false
 	}
 
 	return (
@@ -91,7 +137,7 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 				className="custom" 
 				type="text" 
 				placeholder={ activeChatUser ? `Message ${activeChatUser.name}` : 'Send Message' } 
-				onKeyDown={ sendMessage }
+				onKeyDown={ onInputKeyDown }
 				ref={ messageInputEl }
 			/>
 			{
@@ -103,8 +149,8 @@ const MessageInput = ({ activeChatUser, activeChannel, authUser }: Props): JSX.E
 					/>
 				</>
 			}
-			<i className="ri-add-line mx-4"></i>
-			<i className="ri-send-plane-line"></i>
+			<i className="ri-add-line mx-4 cursor-pointer" onClick={ openFileExplorer }></i>
+			<i className="ri-send-plane-line cursor-pointer" onClick={ onSendBtnClick }></i>
 		</div>
 	)
 }

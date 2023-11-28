@@ -9,6 +9,13 @@ export const sendMessage = async(chat: Chat) => {
 		.insert(chat)
 }
 
+export const removeMessage = async(chat: Chat) => {
+	return supabase
+		.from('chat')
+		.delete()
+		.eq('id', chat.id);
+}
+
 export const chatListener = async(userId: number, eventCallback: (payload: SupabaseRealtimePayload<Chat>) => void) => {
 	const connect = supabase
 		.from(`chat:to=eq.${userId}`)
